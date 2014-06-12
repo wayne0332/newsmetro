@@ -43,10 +43,7 @@
     <breakpoint_rules />
     <ui_properties />
   </component>
-  <component name="EntryPointsManager">
-    <entry_points version="2.0" />
-  </component>
-  <component name="IdProvider" IDEtalkID="14C7B75C5B37B5BEE1F6270150A895C0" />
+  <component name="IdProvider" IDEtalkID="4235A1BFBC57E81696EA26E51F524483" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -164,6 +161,22 @@
       <Host>localhost</Host>
       <Port>5050</Port>
     </configuration>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
 
