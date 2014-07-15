@@ -25,6 +25,9 @@
         <module name="newsmetro" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="newsmetro" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
