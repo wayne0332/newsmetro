@@ -30,37 +30,42 @@
         <property name="username" value="${username}"></property>
         <property name="password" value="${password}"></property>
     </bean>
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource">
-            <ref bean="dataSource" />
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">
-                    org.hibernate.dialect.MySQLDialect
-                </prop>
-                <prop key="hibernate.show_sql">true</prop>
-            </props>
-        </property>
-        <property name="packagesToScan">
-            <list>
-                <value>com.newsmetro</value>
-            </list>
-        </property>
-        <property name="annotatedClasses">
-            <list>
-                <value>com.newsmetro.po.TargetPoint</value>
-                <value>com.newsmetro.po.XpathMaping</value>
-                <value>com.newsmetro.po.User</value>
-            </list>
-        </property>
+    <!--<bean id="sessionFactory"-->
+          <!--class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">-->
+        <!--<property name="dataSource">-->
+            <!--<ref bean="dataSource" />-->
+        <!--</property>-->
+        <!--<property name="hibernateProperties">-->
+            <!--<props>-->
+                <!--<prop key="hibernate.dialect">-->
+                    <!--org.hibernate.dialect.MySQLDialect-->
+                <!--</prop>-->
+                <!--<prop key="hibernate.show_sql">true</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+        <!--<property name="packagesToScan">-->
+            <!--<list>-->
+                <!--<value>com.newsmetro</value>-->
+            <!--</list>-->
+        <!--</property>-->
+        <!--<property name="annotatedClasses">-->
+            <!--<list>-->
+                <!--<value>com.newsmetro.po.TargetPoint</value>-->
+                <!--<value>com.newsmetro.po.XpathMaping</value>-->
+                <!--<value>com.newsmetro.po.User</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--mybatis-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis.xml" />
+        <property name="dataSource" ref="dataSource" />
     </bean>
     <!--======================================= 事务管理================================================== -->
     <aop:aspectj-autoproxy expose-proxy="true" />
     <tx:annotation-driven transaction-manager="txManager"/>
-    <bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
@@ -101,4 +106,12 @@
         </property>
     </bean>
     <bean id="clearNewUserJob" class="com.newsmetro.jobs.ClearNewUserJob" />
+
+    <!--======================================= mapper================================================== -->
+    <bean id="parentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" abstract="true">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    <bean id="userMapper" parent="parentMapper">
+        <property name="mapperInterface" value="com.newsmetro.dao.UserMapper"></property>
+    </bean>
 </beans>

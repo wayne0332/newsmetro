@@ -2,16 +2,12 @@ package com.newsmetro.po;
 
 import com.newsmetro.enumeration.TargetStatus;
 
-import javax.persistence.*;
 
-import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * TargetPoint entity. @author MyEclipse Persistence Tools
  */
-@Entity
-//@Table(name = "target_point", catalog = "news_metro")
-@Table(name = "target_point", catalog = "gklifg")
+
 public class TargetPoint implements java.io.Serializable {
 
 	// Fields
@@ -57,9 +53,6 @@ public class TargetPoint implements java.io.Serializable {
 	}
 
 	// Property accessors
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
 	public Integer getId() {
 		return this.id;
 	}
@@ -68,8 +61,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
 	public User getUser() {
 		return user;
 	}
@@ -78,7 +69,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.user = user;
 	}
 
-	@Column(name = "name", nullable = false, length = 45)
 	public String getName() {
 		return this.name;
 	}
@@ -87,7 +77,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "url", nullable = false, length = 512)
 	public String getUrl() {
 		return this.url;
 	}
@@ -96,7 +85,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.url = url;
 	}
 
-	@Column(name = "abs_xpath")
 	public String getAbsXpath() {
 		return this.absXpath;
 	}
@@ -105,7 +93,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.absXpath = absXpath;
 	}
 
-	@Column(name = "rel_xpath")
 	public String getRelXpath() {
 		return this.relXpath;
 	}
@@ -114,7 +101,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.relXpath = relXpath;
 	}
 
-	@Column(name = "regex", length = 128)
 	public String getRegex() {
 		return this.regex;
 	}
@@ -123,7 +109,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.regex = regex;
 	}
 
-	@Column(name = "md5", length = 128)
 	public String getMd5() {
 		return this.md5;
 	}
@@ -132,7 +117,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.md5 = md5;
 	}
 
-	@Column(name = "isRss")
 	public Boolean getIsRss() {
 		return this.isRss;
 	}
@@ -141,9 +125,6 @@ public class TargetPoint implements java.io.Serializable {
 		this.isRss = isRss;
 	}
 
-
-	@Column(name = "status", nullable = false, length = 45)
-	@Enumerated(EnumType.STRING)
 	public com.newsmetro.enumeration.TargetStatus getStatus() {
 		return status;
 	}

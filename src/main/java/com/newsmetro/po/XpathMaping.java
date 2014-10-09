@@ -1,13 +1,5 @@
 package com.newsmetro.po;
 
-import javax.persistence.*;
-
-/**
- * XpathMaping entity. @author MyEclipse Persistence Tools
- */
-@Entity
-//@Table(name = "xpath_maping", catalog = "news_metro")
-@Table(name = "xpath_maping", catalog = "gklifg")
 public class XpathMaping implements java.io.Serializable {
 
 	// Fields
@@ -29,9 +21,6 @@ public class XpathMaping implements java.io.Serializable {
 	}
 
 	// Property accessors
-	@Id
-	@GeneratedValue
-	@Column(name = "id", unique = true, nullable = false)
 	public Integer getId() {
 		return this.id;
 	}
@@ -40,7 +29,6 @@ public class XpathMaping implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "url", length = 512)
 	public String getUrl() {
 		return this.url;
 	}
@@ -49,7 +37,6 @@ public class XpathMaping implements java.io.Serializable {
 		this.url = url;
 	}
 
-	@Column(name = "xpath")
 	public String getXpath() {
 		return this.xpath;
 	}

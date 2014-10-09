@@ -3,17 +3,12 @@ package com.newsmetro.po;
 import com.newsmetro.enumeration.SexEnum;
 import com.newsmetro.enumeration.UserStatus;
 
-import javax.persistence.*;
 import java.util.Date;
 
-import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * User entity. @author MyEclipse Persistence Tools
  */
-@Entity
-//@Table(name = "user", catalog = "news_metro")
-@Table(name = "user", catalog = "gklifg")
 public class User implements java.io.Serializable {
 
 	// Fields
@@ -66,9 +61,6 @@ public class User implements java.io.Serializable {
 	}
 
 	// Property accessors
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
 	public Integer getId() {
 		return this.id;
 	}
@@ -77,7 +69,6 @@ public class User implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 45)
 	public String getName() {
 		return this.name;
 	}
@@ -86,7 +77,6 @@ public class User implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "password", nullable = false, length = 45)
 	public String getPassword() {
 		return this.password;
 	}
@@ -95,7 +85,6 @@ public class User implements java.io.Serializable {
 		this.password = password;
 	}
 
-	@Column(name = "email", nullable = false, length = 45)
 	public String getEmail() {
 		return this.email;
 	}
@@ -104,8 +93,6 @@ public class User implements java.io.Serializable {
 		this.email = email;
 	}
 
-	@Column(name = "sex", nullable = false, length = 45)
-	@Enumerated(EnumType.STRING)
 	public com.newsmetro.enumeration.SexEnum getSex() {
 		return this.sex;
 	}
@@ -114,7 +101,6 @@ public class User implements java.io.Serializable {
 		this.sex = sex;
 	}
 
-	@Column(name = "photo", nullable = false)
 	public String getPhoto() {
 		return this.photo;
 	}
@@ -123,7 +109,6 @@ public class User implements java.io.Serializable {
 		this.photo = photo;
 	}
 
-	@Column(name = "talking", nullable = false)
 	public String getTalking() {
 		return this.talking;
 	}
@@ -132,8 +117,6 @@ public class User implements java.io.Serializable {
 		this.talking = talking;
 	}
 
-	@Column(name = "status", nullable = false, length = 45)
-	@Enumerated(EnumType.STRING)
 	public com.newsmetro.enumeration.UserStatus getStatus() {
 		return this.status;
 	}
@@ -142,7 +125,6 @@ public class User implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "code", nullable = false)
 	public String getCode() {
 		return this.code;
 	}
@@ -151,8 +133,6 @@ public class User implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "registerDate", length = 10)
 	public Date getRegisterDate() {
 		return this.registerDate;
 	}

@@ -10,7 +10,7 @@ public class ClearNewUserJob {
 	@Autowired
 	private UserService userService;
 	public void execute(){
-		int num = userService.clearNewUser();
-		logger.info("\n=========清除未激活账号:"+num+"===========");
+		userService.clearNewUser();
+		logger.info("\n=========清除未激活账号===========");
 	}
 }
