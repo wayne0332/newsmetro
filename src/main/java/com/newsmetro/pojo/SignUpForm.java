@@ -2,14 +2,12 @@ package com.newsmetro.pojo;
 
 import com.newsmetro.enumeration.SexEnum;
 
-import javax.validation.constraints.Pattern;
-
 public class SignUpForm {
 	private String name;
 	private String email;
-	@Pattern(regexp="[^\\s]{6,11}")
+//	@Pattern(regexp="[^\\s]{6,11}")
 	private String password;
-	@Pattern(regexp="[^\\s]{6,11}")
+//	@Pattern(regexp="[^\\s]{6,11}")
 	private String repassword;
 	private SexEnum sex;
 	private String photo;

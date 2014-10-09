@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsmetro.dao.UserMapper">
+
+    <select id="getUserCountByEmail" resultType="java.lang.Long">
+        select count(*) from user where email = #{email};
+    </select>
+
+    <select id="getUserByEmail" resultType="java.lang.Long">
+        select * from user where email = #{email};
+    </select>
+
+    <select id="getUserByEmailAndCode" resultType="com.newsmetro.po.User">
+        select * from user where email = #{email} and code = #{code};
+    </select>
+
+    <select id="getUserByEmailAndStatus" resultType="com.newsmetro.po.User">
+        select * from user where email = #{email} and status = #{status};
+    </select>
+
+    <select id="getUserByStatusAndRegisterDate" resultType="com.newsmetro.po.User">
+        select id from user where status = #{status} and registerDate = #{registerDate};
+    </select>
+
+    <select id="getUserByEmailAndPassword" resultType="com.newsmetro.po.User">
+        select * from user where email = #{email} and password = #{password}
+    </select>
+
+    <delete id="deleteByIdList"  >
+        delete from user where id in
+        <foreach collection="idList" item="item" open="(" separator="," close=")">#{item} </foreach>
+    </delete>
+
+    <delete id="deleteById"  >
+        delete from user where id = #{id}
+    </delete>
+
+    <insert id="save"  useGeneratedKeys="true" keyProperty="id">
+        insert into user(name,password,email,sex,photo,talking,status,code,registerDate)
+        values (#{user.name},#{user.password},#{user.email},#{user.sex},#{user.photo},#{user.talking}
+        ,#{user.status},#{user.code},#{user.registerDate});
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        update user
+        <set>
+            <if test="#{user.name} != null">name = #{user.name}</if>
+            <if test="#{user.password} != null">password = #{user.password}</if>
+            <if test="#{user.email} != null">email = #{user.email}</if>
+            <if test="#{user.sex} != null">sex = #{user.sex}</if>
+            <if test="#{user.photo} != null">photo = #{user.photo}</if>
+            <if test="#{user.talking} != null">talking = #{user.talking}</if>
+            <if test="#{user.status} != null">status = #{user.status}</if>
+            <if test="#{user.code} != null">code = #{user.code}</if>
+            <if test="#{user.registerDate} != null">registerDate = #{user.registerDate}</if>
+        </set>
+        where id = #{user.id}
+    </update>
+
+</mapper>

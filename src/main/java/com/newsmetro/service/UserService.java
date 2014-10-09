@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class UserService {
 	static Logger logger = LoggerFactory.getLogger(UserService.class.getName());
-	@Autowired
-	private com.newsmetro.dao.UserDao dao;
+//	@Autowired
+//	private com.newsmetro.dao.UserDao dao;
 
     @Autowired
     private UserMapper userMapper;
