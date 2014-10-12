@@ -114,4 +114,7 @@
     <bean id="userMapper" parent="parentMapper">
         <property name="mapperInterface" value="com.newsmetro.dao.UserMapper"></property>
     </bean>
+    <bean id="targetCacheMapper" parent="parentMapper">
+        <property name="mapperInterface" value="com.newsmetro.dao.TargetCacheMapper"></property>
+    </bean>
 </beans>
