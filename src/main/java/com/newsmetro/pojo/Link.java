@@ -1,8 +1,15 @@
 package com.newsmetro.pojo;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Link {
+    @Expose
+    @SerializedName(value = "title")
 	private String text;
-	private String href;
+	@Expose
+    @SerializedName(value = "link")
+    private String href;
 	public String getText() {
 		return text;
 	}
