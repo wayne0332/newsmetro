@@ -77,7 +77,9 @@ public class UserService {
 //		for(int i=0;i<list.size();i++){
 //			array[i]=list.get(i);
 //		}
-		userMapper.deleteByIdList(list);
+        if(list!=null&&list.size()>0){
+            userMapper.deleteByIdList(list);
+        }
 	}
 	
 	public void update(User user){

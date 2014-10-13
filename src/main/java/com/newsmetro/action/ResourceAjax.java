@@ -1,11 +1,13 @@
 package com.newsmetro.action;
 
 import com.newsmetro.enumeration.TargetStatus;
+import com.newsmetro.po.TargetCache;
 import com.newsmetro.po.TargetPoint;
 import com.newsmetro.po.User;
 import com.newsmetro.pojo.Link;
 import com.newsmetro.pojo.Rss;
 import com.newsmetro.pojo.RssItem;
+import com.newsmetro.service.TargetCacheService;
 import com.newsmetro.service.TargetPointService;
 import com.newsmetro.service.UserService;
 import com.newsmetro.util.DESUtil;
@@ -42,7 +44,9 @@ public class ResourceAjax {
 	private TargetPointService tpService;
 	@Autowired
 	private UserService userService;
-	
+    @Autowired
+    private TargetCacheService targetCacheService;
+
 	@RequestMapping(value="/getResource.html",params = "isRss=1")
 	public void getRss(HttpServletRequest request,HttpServletResponse response,TargetPoint target) {
 		
@@ -52,6 +56,7 @@ public class ResourceAjax {
 			String docStr = getter.getDocument(target.getUrl());
 			String md5 = MD5Util.md5(docStr, MD5Util._32_BIT);
 			target.setMd5(md5);
+
 			tpService.updateTarget(target);
 			doc = getter.toDom4jDoc(docStr);
 		} catch (ClientProtocolException e) {
@@ -109,35 +114,37 @@ public class ResourceAjax {
 		jsonObject.put("title",target.getName());
 		jsonObject.put("link",target.getUrl());
 		jsonObject.put("description","");
-		JSONArray jsonArray = new JSONArray();
+		//JSONArray jsonArray = new JSONArray();
 		
-		List<Link> linkList = null;
-		try {
-			linkList = xpathUtil.getLinkListByTarget(target);
-		} catch (ClientProtocolException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (XPatherException e1) {
-			e1.printStackTrace();
-		}
-		for(int i=0;i<linkList.size();i++){
-			Link item = linkList.get(i);
-			JSONObject jItem = new JSONObject();
-			jItem.put("title", item.getText());
-			jItem.put("link", item.getHref());
-			jItem.put("description", "");
-			jItem.put("pubDate", "");
-			jsonArray.add(i,jItem);
-		}
-		jsonObject.put("itemList", linkList);
+//		List<Link> linkList = null;
+//		try {
+//			linkList = xpathUtil.getLinkListByTarget(target);
+//		} catch (ClientProtocolException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		} catch (XPatherException e1) {
+//			e1.printStackTrace();
+//		}
+//		for(int i=0;i<linkList.size();i++){
+//			Link item = linkList.get(i);
+//			JSONObject jItem = new JSONObject();
+//			jItem.put("title", item.getText());
+//			jItem.put("link", item.getHref());
+//			jItem.put("description", "");
+//			jItem.put("pubDate", "");
+//			jsonArray.add(i,jItem);
+//		}
+        TargetCache targetCache = targetCacheService.getTargetCacheByTargetId(target.getId());
+		jsonObject.put("itemList",targetCache.getItems());
 		
 		response.setContentType("application/json;charset=UTF-8");  
         response.setHeader("Pragma", "No-cache");  
         response.setHeader("Cache-Control", "no-cache");  
         response.setDateHeader("Expires", 0);
         PrintWriter out = null;
-        try {  
+        try {
+            System.out.println(jsonObject.toString());
             out = response.getWriter();  
             out.write(jsonObject.toString());  
         } catch (IOException e) {  
@@ -189,7 +196,7 @@ public class ResourceAjax {
 		}
 		
 		User user = (User)request.getSession().getAttribute("user");
-		if(target.getUser().getId()!=user.getId()){
+		if(target.getUserId()!=user.getId()){
 			flag = false;
 		}
 		
@@ -225,7 +232,7 @@ public class ResourceAjax {
 		}
 		
 		User user = (User)request.getSession().getAttribute("user");
-		if(target.getUser().getId()!=user.getId()){
+		if(target.getUserId()!=user.getId()){
 			flag = false;
 		}
 		
@@ -262,7 +269,7 @@ public class ResourceAjax {
 		}
 		
 		User user = (User)request.getSession().getAttribute("user");
-		if(target.getUser().getId()!=user.getId()){
+		if(target.getUserId()!=user.getId()){
 			flag = false;
 		}
 		

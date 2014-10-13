@@ -14,6 +14,7 @@ public class TargetPoint implements java.io.Serializable {
 
 	private Integer id;
 	private User user;
+    private Integer userId;
 	private String name;
 	private String url;
 	private String absXpath;
@@ -23,34 +24,6 @@ public class TargetPoint implements java.io.Serializable {
 	private Boolean isRss;
 	private TargetStatus status;
 
-	// Constructors
-
-	/** default constructor */
-	public TargetPoint() {
-	}
-
-	/** minimal constructor */
-	public TargetPoint(User user, String name, String url, TargetStatus status) {
-		this.user = user;
-		this.name = name;
-		this.url = url;
-		this.status = status;
-	}
-
-	/** full constructor */
-	public TargetPoint(User user, String name, String url,
-			String absXpath, String relXpath, String regex, String md5,
-			Boolean isRss, TargetStatus status) {
-		this.user = user;
-		this.name = name;
-		this.url = url;
-		this.absXpath = absXpath;
-		this.relXpath = relXpath;
-		this.regex = regex;
-		this.md5 = md5;
-		this.isRss = isRss;
-		this.status = status;
-	}
 
 	// Property accessors
 	public Integer getId() {
@@ -133,5 +106,11 @@ public class TargetPoint implements java.io.Serializable {
 		this.status = status;
 	}
 
+    public Integer getUserId() {
+        return userId;
+    }
 
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

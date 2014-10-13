@@ -6,5 +6,6 @@
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
         <mapper resource="mapper/TargetPointMapper.xml"/>
+        <mapper resource="mapper/TargetCacheMapper.xml"/>
     </mappers>
 </configuration>

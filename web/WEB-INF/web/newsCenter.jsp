@@ -136,7 +136,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(isRss==1){
 				$.ajax({
 					type : "POST",
-					url : "getResource.html?isRss=1&url="+url+"&xpath="+xpath,
+					url : "getResource.html?isRss=1&id="+target.id+"&url="+url+"&xpath="+xpath,
 					success : function(data) {
 						$("#name_"+index).html("");
 						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + target.name + "</a>");
@@ -155,7 +155,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}else{
 				$.ajax({
 					type : "POST",
-					url : "getResource.html?isRss=0&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath,
+					url : "getResource.html?isRss=0&id="+target.id+"&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath,
 					success : function(data) {
 						$("#name_"+index).html("");
 						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + target.name + "</a>");
