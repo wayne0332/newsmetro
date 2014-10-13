@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsmetro.dao.TargetPointMapper">
+
+    <select id="getTargetById" resultType="com.newsmetro.po.TargetPoint">
+        select * from target_point where id = #{id};
+    </select>
+
+    <select id="findTargetByUserIdAndStatus" resultType="com.newsmetro.po.TargetPoint">
+        select user_id as userId,name as name,url as url,abs_xpath as absXpath,rel_xpath as relXpath,regex as regex,md5 as md5,isRss as isRss,status as status from target_point where user_id = #{userId}
+        <if test="#{status}!=null">
+            and status = #{status}
+        </if>
+    </select>
+
+    <delete id="deleteById">
+        delete from target_point where id = #{id}
+    </delete>
+
+    <insert id="save"  useGeneratedKeys="true" keyProperty="id">
+        insert into target_point(user_id,name,url,abs_xpath,rel_xpath,regex,md5,isRss,status)
+        values (#{target.userId},#{target.name},#{target.url},#{target.absXpath},#{target.relXpath}#{target.regex},#{target.md5}
+        ,#{target.isRss},#{target.status});
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <update id="update">
+        update target_point
+        <set>
+            <if test="#{target.userId} != null">user_id = #{target.userId}</if>
+            <if test="#{target.name} != null">name = #{target.name}</if>
+            <if test="#{target.url} != null">url = #{target.url}</if>
+            <if test="#{target.absXpath} != null">abs_xpath = #{target.absXpath}</if>
+            <if test="#{target.relXpath} != null">rel_xpath = #{target.relXpath}</if>
+            <if test="#{target.regex} != null">regex = #{target.regex}</if>
+            <if test="#{target.md5} != null">md5 = #{target.md5}</if>
+            <if test="#{target.isRss} != null">isRss = #{target.isRss}</if>
+            <if test="#{target.status} != null">status = #{target.status}</if>
+        </set>
+        where id = #{target.id}
+    </update>
+
+</mapper>

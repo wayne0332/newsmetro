@@ -1,5 +1,6 @@
 package com.newsmetro.service;
 
+import com.newsmetro.dao.TargetPointMapper;
 import com.newsmetro.enumeration.TargetStatus;
 import com.newsmetro.po.TargetPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,43 +11,35 @@ import java.util.List;
 
 @Service
 public class TargetPointService {
-//	@Autowired
-//	private com.newsmetro.dao.TargetPointDao dao;
+
+	@Autowired
+	private TargetPointMapper targetPointMapper;
 	
 	public void addTargetPoint(TargetPoint target){
-//		dao.save(target);
+        targetPointMapper.save(target);
 	}
 
 	public List<TargetPoint> getTargetListByUserId(int userId){
 
-//		List<TargetPoint> list = dao.find("from TargetPoint t where t.user.id=?", new Object[]{userId});
-//		return list;
-        return null;
+		List<TargetPoint> list = targetPointMapper.findTargetByUserIdAndStatus(userId,null);
+		return list;
 	}
 
-	public List<TargetPoint> getRegularTargetListByUserId(int userId){
-//		List<TargetPoint> list = dao.find("from TargetPoint t where t.user.id=? and t.status=?", new Object[]{userId, TargetStatus.REGULAR});
-//		return list;
-        return null;
-	}
-	public TargetPoint getTargetById(Serializable id){
-		return null;
-//        return dao.get(id);
-	}
+	public List<TargetPoint> getRegularTargetListByUserId(int userId) {
+        List<TargetPoint> list = targetPointMapper.findTargetByUserIdAndStatus(userId, TargetStatus.REGULAR);
+        return list;
+    }
 
-	public void deleteTarget(TargetPoint target){
-//		dao.delete(target);
-	}
+    public TargetPoint getTargetById(Integer id){
+        return targetPointMapper.getTargetById(id);
+    }
 
-	public void persist(TargetPoint target){
-//		dao.persist(target);
+	public void deleteTarget(Integer id){
+        targetPointMapper.deleteById(id);
 	}
 
 	public void updateTarget(TargetPoint target){
-//		dao.saveOrUpdate(target);
+        targetPointMapper.update(target);
 	}
 
-	public void flush(){
-//		dao.flush();
-	}
 }

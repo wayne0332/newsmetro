@@ -55,19 +55,15 @@ public class ResourceAjax {
 			tpService.updateTarget(target);
 			doc = getter.toDom4jDoc(docStr);
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			doc = null;
 			e.printStackTrace();
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			doc = null;
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			doc = null;
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			doc = null;
 			e.printStackTrace();
 		}
@@ -119,13 +115,10 @@ public class ResourceAjax {
 		try {
 			linkList = xpathUtil.getLinkListByTarget(target);
 		} catch (ClientProtocolException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (XPatherException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		for(int i=0;i<linkList.size();i++){
@@ -200,7 +193,7 @@ public class ResourceAjax {
 			flag = false;
 		}
 		
-		tpService.deleteTarget(target);
+		tpService.deleteTarget(target.getId());
 		
 		JSONObject res = new JSONObject();
 		res.put("res", flag?true:false);
@@ -304,18 +297,15 @@ public class ResourceAjax {
 		try {
 			targetName = new String(request.getParameter("targetName").getBytes("ISO-8859-1"),"utf-8");
 		} catch (UnsupportedEncodingException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 		String decodeKey = null;;
 		try {
 			decodeKey = desUtil.getDecryptString(signInKey,key);
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			flag = false;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String array[] = null;
