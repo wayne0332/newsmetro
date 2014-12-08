@@ -41,7 +41,7 @@
     <context-param>
         <!-- 让javaEE载入spring的上下文配置 -->
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:applicationContext.xml</param-value>
+        <param-value>classpath:application*.xml</param-value>
     </context-param>
     <!-- 编码过滤器 -->
     <filter>

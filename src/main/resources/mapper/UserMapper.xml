@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.newsmetro.dao.UserMapper">
+    <sql id="user_columns">id as id,name as name,password as password,email as email,sex as sex,
+    photo as photo,talking as talking,status as status,code as code, registerDate as registerDate</sql>
 
     <select id="getUserCountByEmail" resultType="java.lang.Long">
         select count(*) from user where email = #{email};
     </select>
 
-    <select id="getUserByEmail" resultType="java.lang.Long">
+    <select id="getUserByEmail" resultType="com.newsmetro.po.User">
         select * from user where email = #{email};
     </select>
 
@@ -47,15 +49,15 @@
     <update id="update">
         update user
         <set>
-            <if test="#{user.name} != null">name = #{user.name}</if>
-            <if test="#{user.password} != null">password = #{user.password}</if>
-            <if test="#{user.email} != null">email = #{user.email}</if>
-            <if test="#{user.sex} != null">sex = #{user.sex}</if>
-            <if test="#{user.photo} != null">photo = #{user.photo}</if>
-            <if test="#{user.talking} != null">talking = #{user.talking}</if>
-            <if test="#{user.status} != null">status = #{user.status}</if>
-            <if test="#{user.code} != null">code = #{user.code}</if>
-            <if test="#{user.registerDate} != null">registerDate = #{user.registerDate}</if>
+            <if test="user.name != null">name = #{user.name}</if>
+            <if test="user.password != null">password = #{user.password}</if>
+            <if test="user.email != null">email = #{user.email}</if>
+            <if test="user.sex != null">sex = #{user.sex}</if>
+            <if test="user.photo != null">photo = #{user.photo}</if>
+            <if test="user.talking != null">talking = #{user.talking}</if>
+            <if test="user.status != null">status = #{user.status}</if>
+            <if test="user.code != null">code = #{user.code}</if>
+            <if test="user.registerDate != null">registerDate = #{user.registerDate}</if>
         </set>
         where id = #{user.id}
     </update>
