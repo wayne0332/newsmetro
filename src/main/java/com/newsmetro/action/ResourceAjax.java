@@ -49,15 +49,18 @@ public class ResourceAjax {
 
 	@RequestMapping(value="/getResource.html",params = "isRss=1")
 	public void getRss(HttpServletRequest request,HttpServletResponse response,TargetPoint target) {
-		
+        if(target==null&&target.getId()==null){
+            return;
+        }
+		TargetPoint tp = tpService.getTargetById(target.getId());
 		HttpGetter getter = new HttpGetter();
 		Document doc = null;
 		try {
-			String docStr = getter.getDocument(target.getUrl());
+			String docStr = getter.getDocument(tp.getUrl());
 			String md5 = MD5Util.md5(docStr, MD5Util._32_BIT);
-			target.setMd5(md5);
+            tp.setMd5(md5);
 
-			tpService.updateTarget(target);
+			tpService.updateTarget(tp);
 			doc = getter.toDom4jDoc(docStr);
 		} catch (ClientProtocolException e) {
 			doc = null;
@@ -109,32 +112,12 @@ public class ResourceAjax {
 	
 	@RequestMapping(value="/getResource.html",params = "isRss=0")
 	public void getWeb(HttpServletRequest request,HttpServletResponse response,TargetPoint target){
-		XpathUtil xpathUtil = new XpathUtil();
+        TargetPoint tp = tpService.getTargetById(target.getId());
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("title",target.getName());
-		jsonObject.put("link",target.getUrl());
+		jsonObject.put("title",tp.getName());
+		jsonObject.put("link",tp.getUrl());
 		jsonObject.put("description","");
-		//JSONArray jsonArray = new JSONArray();
-		
-//		List<Link> linkList = null;
-//		try {
-//			linkList = xpathUtil.getLinkListByTarget(target);
-//		} catch (ClientProtocolException e1) {
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		} catch (XPatherException e1) {
-//			e1.printStackTrace();
-//		}
-//		for(int i=0;i<linkList.size();i++){
-//			Link item = linkList.get(i);
-//			JSONObject jItem = new JSONObject();
-//			jItem.put("title", item.getText());
-//			jItem.put("link", item.getHref());
-//			jItem.put("description", "");
-//			jItem.put("pubDate", "");
-//			jsonArray.add(i,jItem);
-//		}
+
         TargetCache targetCache = targetCacheService.getTargetCacheByTargetId(target.getId());
 		jsonObject.put("itemList",targetCache.getItems());
 		
@@ -371,4 +354,36 @@ public class ResourceAjax {
             e.printStackTrace();  
         }
 	}
+
+    @RequestMapping(value="/getResourceMd5.html")
+    public void getResourceMd5(HttpServletRequest request,HttpServletResponse response){
+        boolean flag = true;
+        Integer id = null;
+        try{
+            id = Integer.parseInt(request.getParameter("id"));
+        }catch(NumberFormatException e){
+            flag = false;
+        }
+        if(id==null){
+            flag = false;
+        }
+
+        String md5 = tpService.getTargetMd5(id);
+
+        User user = (User)request.getSession().getAttribute("user");
+
+        JSONObject res = new JSONObject();
+        res.put("md5", flag?md5:null);
+        response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+            out.write(res.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

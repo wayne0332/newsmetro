@@ -93,9 +93,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		var groupNum = 0;
   		var targetNum = 0;
   		var pointedItem = null;
-		var targetList=new Array();
+        var targetList = null;
+		var targetItems=new Array();
        for(var i=0;i<50;i++){
-          targetList[i]=new Array();
+          targetItems[i]=new Array();
        }
        /* 获取目标点列表*/
 		$(document).ready(function() {
@@ -112,53 +113,61 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						panel.append(block);
 						var name = '<div class="fl f16" id="name_'+i+'"></div>';
 						var des = '<div class="fl mt5 ml10 color_gray w250" id="description_'+i+'"></div>';
+                        var md5 = '<input type="hidden" id="md5_'+i+'" value="'+data[t].md5+'" />';
+                        var target_id = '<input type="hidden" id="target_id_'+i+'" value="'+data[t].id+'" />';
 						var hr = '<div class="cb mt5 mb10"><hr width="200px" /></div>';
 						var ul = '<div style="width:340px;"><ul class="fl" id="list_'+i+'"><li><img class="mt50" src="img/loading.gif" /></li></ul></div>';
-						$("#block_"+i).append(name,des,hr,ul);
+						$("#block_"+i).append(target_id,md5,name,des,hr,ul);
 						$("#name_"+i).append("<a class='a_link_blue' href='javascript:void(0);' >" + data[t].name + "</a>");
 						/*$("#block_"+i).after('<div class="cb h30"></div>');  */
-						if(i%2==0&&i!=0){
+                        if(i%2==0&&i!=0){
 							$("#block_"+i).after("<div class='cb'></div>");
 						}
 						i++;
 						targetNum++;
 					}
+                    targetList = data;
 					for(var i=0;i<data.length;i++){
-						getTargetPoint(data[i].url,data[i].isRss,data[i].relXpath,data[i],i+1);
+						getTargetPoint(data[i].isRss,i+1);
 					}
+
 					groupNum = Math.ceil(targetNum/2);
 				}
 			});
-			
+//            for(var i=0;i<targetNum;i++){
+//                window.setInterval("checkTargetUpdate("+i+","+$("#target_id_"+i).value+","+$("#md5_"+i).value+")",30000);
+//            }
 		});
 		/* 获取目标点内容 */
-		function getTargetPoint(url,isRss,xpath,target,index){
+		function getTargetPoint(isRss,index){
 			if(isRss==1){
 				$.ajax({
 					type : "POST",
-					url : "getResource.html?isRss=1&id="+target.id+"&url="+url+"&xpath="+xpath,
+					url : "getResource.html?isRss=1&id="+targetList[index-1].id,
 					success : function(data) {
 						$("#name_"+index).html("");
-						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + target.name + "</a>");
-						$("#description_"+index).append("<span>" + data.description + "</span>");
+						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + targetList[index-1].name + "</a>");
+                        $("#description_"+index).html("");
+                        $("#description_"+index).append("<span>" + data.description + "</span>");
 						var itemList = data.itemList;
 						$("#list_"+index).html("");
 						var length = (itemList.length<=12)?itemList.length:12;
 						for (var i=0;i<itemList.length;i++){
 							if(i<length){
-								$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+"' class='a_link' style='line-height:20px;' href='javascript:showNews("+(index-1)+","+i+");' >"+itemList[i].title+"</a><li>");
+								$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+
+                                        "' class='a_link' style='line-height:20px;' href='javascript:showNews("+(index-1)+","+i+");' >"+itemList[i].title+"</a><li>");
 							}
-							targetList[index-1][i]=itemList[i];
+							targetItems[index-1][i]=itemList[i];
 						}
 					}
 				});
 			}else{
 				$.ajax({
 					type : "POST",
-					url : "getResource.html?isRss=0&id="+target.id+"&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath,
+					url : "getResource.html?isRss=0&id="+targetList[index-1].id,//+"&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath
 					success : function(data) {
 						$("#name_"+index).html("");
-						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + target.name + "</a>");
+						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + targetList[index-1].name + "</a>");
 						$("#description_"+index).append("<span>" + data.description + "</span>");
 						var itemList = data.itemList;
 						$("#list_"+index).html("");
@@ -168,13 +177,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								//$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+"' class='a_link' style='line-height:20px;' href='javascript:showNews("+(index-1)+","+i+");' >"+itemList[i].title+"</a><li>");
 								$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+"' class='a_link' style='line-height:20px;' href='"+itemList[i].href+"' target='_blank' >"+itemList[i].text+"</a><li>");
 							}
-							targetList[index-1][i]=itemList[i];
+							targetItems[index-1][i]=itemList[i];
 						}
+                        window.setInterval("checkTargetUpdate("+index+","+targetList[index-1].id+")",30000);
 					}
 				});
 			}
 		};
-			/* 显示新闻 */
+		/* 显示新闻 */
 		function showNews(targetIndex,itemIndex){
 			if(pointedItem!=null){
 				$(pointedItem).attr("style","line-height:20px;");
@@ -191,12 +201,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			trunGroupShow(groupIndex);
 			
 			$("#news_panel").html("");
-			var titleDiv = "<div style='margin:0 auto; font-size:20px; font-weight: bold; margin-bottom:30px;'><a target='_blank' class='a_link color_blue' href='"+targetList[targetIndex][itemIndex].linkUrl+"' >"+targetList[targetIndex][itemIndex].title+"</a><div>";
-			$("#news_panel").append(titleDiv,targetList[targetIndex][itemIndex].description.htmlCode);
+			var titleDiv = "<div style='margin:0 auto; font-size:20px; font-weight: bold; margin-bottom:30px;'><a target='_blank' class='a_link color_blue' href='"+targetItems[targetIndex][itemIndex].linkUrl+"' >"+targetItems[targetIndex][itemIndex].title+"</a><div>";
+			$("#news_panel").append(titleDiv,targetItems[targetIndex][itemIndex].description.htmlCode);
 			$("#news_panel").attr("style","width:530px; display:block;");
 			
 		}
-		
+
+        function checkTargetUpdate(index,target_id){
+            var old_md5 = $("#md5_"+index).attr("value");
+            $.ajax({
+                type : "POST",
+                url : "getResourceMd5.html?id="+target_id,
+                success : function(data) {
+                    if(data.md5!=old_md5&&$("#has_new_"+index).length==0){
+                        $("#name_"+index).append("<a style='color:red; font-size:8px; margin-left:10px;' href='javascript:void(0);' onclick='getTargetPoint(0,"+index+");'>更新"+
+                                "<span class='alertLabel' style='position:relative; font-weight:bold;' id='has_new_"+index+"' >*</span></a>");
+                    }
+                    $("#md5_"+index).attr("value",data.md5);
+                }
+            });
+        }
+
 		/* 点击添加 */
 		$('#add_res').click(function(){
 			$('#add_form').toggle(0);
@@ -248,7 +273,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$("#page_value").html((groupIndex+1)+'/'+groupNum);
 			}
 		}
-		
-		$(document).bind("selectstart",function(){return false;});
+
+        $(document).bind("selectstart",function(){return false;});
 	</script>
 </html>
