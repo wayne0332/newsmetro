@@ -6,24 +6,24 @@ import java.sql.Timestamp;
  * Created by finetu on 14-10-12.
  */
 public class TargetCache {
-    private Integer id;
-    private Integer targetId;
+    private Long id;
+    private Long targetId;
     private String items;
     private Timestamp updateTime;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getTargetId() {
+    public Long getTargetId() {
         return targetId;
     }
 
-    public void setTargetId(Integer targetId) {
+    public void setTargetId(Long targetId) {
         this.targetId = targetId;
     }
 

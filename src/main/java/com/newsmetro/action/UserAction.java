@@ -83,18 +83,19 @@ public class UserAction {
 					form.getEmail()+"|"+
 					sdf.format(formUser.getRegisterDate()),key);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String urlCode = null;
 		try {
 			urlCode = URLEncoder.encode(desCode,"utf-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		formUser.setCode(desCode);
 		User user = userService.signUp(formUser);
+        if(user==null||user.getId()==null){
+            return new ModelAndView("redirect:/index.html");
+        }
 		if (user != null) {
 			clearSession(request, "user");
 			// 组装激活链接
@@ -167,10 +168,8 @@ public class UserAction {
 		try {
 			keyStr = URLEncoder.encode(desUtil.getEncryptString(user.getEmail()+"||"+user.getPassword(),key),"utf-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// 组装激活链接
@@ -217,10 +216,8 @@ public class UserAction {
 		try {
 			decodeKey = desUtil.getDecryptString(URLDecoder.decode(signInKey,"utf-8"),key);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(decodeKey==null){	
@@ -267,7 +264,7 @@ public class UserAction {
 			return false;
 		}
 		
-		if(!ValidateAssert.matchRegex("[\\w_]+@[\\w\\-_]+\\.[^\\s]+", form.getEmail())){
+		if(!ValidateAssert.matchRegex("[\\w_\\.]+@[\\w\\-_]+\\.[^\\s]+", form.getEmail())){
 			if(errorMap.get("email")==null){
 				errorMap.put("email", "请输入正确的email地址");
 			}

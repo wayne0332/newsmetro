@@ -23,22 +23,22 @@ public class TargetPointService {
         targetPointMapper.save(target);
 	}
 
-	public List<TargetPoint> getTargetListByUserId(int userId){
+	public List<TargetPoint> getTargetListByUserId(Long userId){
 
 		List<TargetPoint> list = targetPointMapper.findTargetByUserIdAndStatus(userId,null);
 		return list;
 	}
 
-	public List<TargetPoint> getRegularTargetListByUserId(int userId) {
+	public List<TargetPoint> getRegularTargetListByUserId(Long userId) {
         List<TargetPoint> list = targetPointMapper.findTargetByUserIdAndStatus(userId, TargetStatus.REGULAR);
         return list;
     }
 
-    public TargetPoint getTargetById(Integer id){
+    public TargetPoint getTargetById(Long id){
         return targetPointMapper.getTargetById(id);
     }
 
-	public void deleteTarget(Integer id){
+	public void deleteTarget(Long id){
         targetPointMapper.deleteById(id);
 	}
 
@@ -46,7 +46,7 @@ public class TargetPointService {
         targetPointMapper.update(target);
 	}
 
-    public String getTargetMd5(Integer id) {
+    public String getTargetMd5(Long id) {
         if(id==null){
             return null;
         }
@@ -58,7 +58,7 @@ public class TargetPointService {
         return md5;
     }
 
-    private String getTargetMd5FromRedis(final Integer id){
+    private String getTargetMd5FromRedis(final Long id){
         return RedisUtil.execute(RedisConstants.REDIS_POOL_MASTER, new RedisUtil.RedisCallback<String>() {
             public String doRedis(Jedis jedis) {
                 String key = RedisConstants.REDIS_KEY_TARGET_MD5_PREFIX + id.toString();

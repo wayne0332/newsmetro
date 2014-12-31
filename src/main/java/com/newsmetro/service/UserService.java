@@ -14,8 +14,6 @@ import java.util.List;
 @Service
 public class UserService {
 	static Logger logger = LoggerFactory.getLogger(UserService.class.getName());
-//	@Autowired
-//	private com.newsmetro.dao.UserDao dao;
 
     @Autowired
     private UserMapper userMapper;
@@ -25,19 +23,15 @@ public class UserService {
 	}
 	
 	public User signUp(User user){
-//		Long count = (Long) dao.find("select count(*) from User u where u.email=?", new Object[]{user.getEmail()}).get(0);
 		Long count = userMapper.getUserCountByEmail(user.getEmail());
-		if(count==0){
+		if(count.equals(0l)){
 			userMapper.save(user);
-            if(user.getId()!=null){
-                return user;
-            }
+            return user;
 		}
 	    return null;
 	}
 	
 	public User findUserByEmail(String email){
-//		List list = dao.find("from User u where u.email=?", new Object[]{email});
 		List<User> list = userMapper.getUserByEmail(email);
         if(list.size()==1){
 			return (User) list.get(0);
@@ -48,7 +42,6 @@ public class UserService {
 	}
 	
 	public boolean activeUser(String email,String code){
-//		List<User> userList = (List<User>) dao.find("from User u where u.email=? and u.code=?",new Object[]{email,code});
         List<User> userList = userMapper.getUserByEmailAndCode(email,code);
         if(userList.size()!=0){
 			User user = userList.get(0);
@@ -57,7 +50,6 @@ public class UserService {
 			return true;
 		}else{
 			if(email!=null&&!email.equals("")){
-//				List<User> newUserList = (List<User>) dao.find("from User u where u.email=? and u.status=?",new Object[]{email, UserStatus.NEW});
                 List<User> newUserList = userMapper.getUserByEmailAndStatus(email,UserStatus.NEW);
                 if(newUserList.size()!=0){
 					User newUser = userList.get(0);
@@ -71,12 +63,7 @@ public class UserService {
 	public void clearNewUser(){
 		long msPerDay = 1000*24*60*60;//一天的毫秒数   
 		Date timeLine = new Date(new Date().getTime()-2*msPerDay);
-//		List<Integer> list = dao.find("select u.id from User u where u.status=? and u.registerDate<=?",new Object[]{UserStatus.NEW,timeLine});
-        List<Integer> list = userMapper.getUserByStatusAndRegisterDate(UserStatus.NEW,timeLine);
-//        Integer[] array = new Integer[list.size()];
-//		for(int i=0;i<list.size();i++){
-//			array[i]=list.get(i);
-//		}
+        List<Long> list = userMapper.getUserByStatusAndRegisterDate(UserStatus.NEW,timeLine);
         if(list!=null&&list.size()>0){
             userMapper.deleteByIdList(list);
         }

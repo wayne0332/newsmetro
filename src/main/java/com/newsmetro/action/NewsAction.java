@@ -29,6 +29,7 @@ public class NewsAction {
 		User user = (User)request.getSession().getAttribute("user");
 		target.setUser(user);
 		target.setStatus(TargetStatus.REGULAR);
+        target.setUserId(user.getId());
 		service.addTargetPoint(target);
 		return "redirect:/toNewsCenter.html";
 	}

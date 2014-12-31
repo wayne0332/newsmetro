@@ -4,7 +4,7 @@ public class XpathMaping implements java.io.Serializable {
 
 	// Fields
 
-	private Integer id;
+	private Long id;
 	private String url;
 	private String xpath;
 
@@ -21,15 +21,17 @@ public class XpathMaping implements java.io.Serializable {
 	}
 
 	// Property accessors
-	public Integer getId() {
-		return this.id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
-	public String getUrl() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
 		return this.url;
 	}
 

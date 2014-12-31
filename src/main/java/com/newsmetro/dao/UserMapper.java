@@ -21,15 +21,15 @@ public interface UserMapper {
 
     List<User> getUserByEmailAndStatus(@Param("email") String email,@Param("status") UserStatus status);
 
-    List<Integer> getUserByStatusAndRegisterDate(@Param("status") UserStatus status,@Param("registerDate") Date registerDate);
+    List<Long> getUserByStatusAndRegisterDate(@Param("status") UserStatus status,@Param("registerDate") Date registerDate);
 
     User getUserByEmailAndPassword(@Param("email") String email,@Param("password") String password);
 
-    void deleteByIdList(@Param("idList") List<Integer> idList);
+    void deleteByIdList(@Param("idList") List<Long> idList);
 
-    void deleteById(@Param("id") Integer id);
+    void deleteById(@Param("id") Long id);
 
-    Integer save(@Param("user") User user);
+    Long save(@Param("user") User user);
 
     void update(@Param("user") User user);
 }

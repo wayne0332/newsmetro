@@ -37,27 +37,27 @@
         delete from user where id = #{id}
     </delete>
 
-    <insert id="save"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="save"  useGeneratedKeys="true" keyProperty="user.id" parameterType="com.newsmetro.po.User">
         insert into user(name,password,email,sex,photo,talking,status,code,registerDate)
         values (#{user.name},#{user.password},#{user.email},#{user.sex},#{user.photo},#{user.talking}
         ,#{user.status},#{user.code},#{user.registerDate});
-        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-            select LAST_INSERT_ID();
-        </selectKey>
+       <!-- <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID() as id;
+        </selectKey>-->
     </insert>
 
     <update id="update">
         update user
         <set>
-            <if test="user.name != null">name = #{user.name}</if>
-            <if test="user.password != null">password = #{user.password}</if>
-            <if test="user.email != null">email = #{user.email}</if>
-            <if test="user.sex != null">sex = #{user.sex}</if>
-            <if test="user.photo != null">photo = #{user.photo}</if>
-            <if test="user.talking != null">talking = #{user.talking}</if>
-            <if test="user.status != null">status = #{user.status}</if>
-            <if test="user.code != null">code = #{user.code}</if>
-            <if test="user.registerDate != null">registerDate = #{user.registerDate}</if>
+            <if test="user.name != null">name = #{user.name},</if>
+            <if test="user.password != null">password = #{user.password},</if>
+            <if test="user.email != null">email = #{user.email},</if>
+            <if test="user.sex != null">sex = #{user.sex},</if>
+            <if test="user.photo != null">photo = #{user.photo},</if>
+            <if test="user.talking != null">talking = #{user.talking},</if>
+            <if test="user.status != null">status = #{user.status},</if>
+            <if test="user.code != null">code = #{user.code},</if>
+            <if test="user.registerDate != null">registerDate = #{user.registerDate},</if>
         </set>
         where id = #{user.id}
     </update>

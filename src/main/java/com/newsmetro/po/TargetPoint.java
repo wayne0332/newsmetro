@@ -12,9 +12,9 @@ public class TargetPoint implements java.io.Serializable {
 
 	// Fields
 
-	private Integer id;
+	private Long id;
 	private User user;
-    private Integer userId;
+    private Long userId;
 	private String name;
 	private String url;
 	private String absXpath;
@@ -26,15 +26,25 @@ public class TargetPoint implements java.io.Serializable {
 
 
 	// Property accessors
-	public Integer getId() {
-		return this.id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
-	public User getUser() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public User getUser() {
 		return user;
 	}
 
@@ -105,12 +115,4 @@ public class TargetPoint implements java.io.Serializable {
 	public void setStatus(TargetStatus status) {
 		this.status = status;
 	}
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 }

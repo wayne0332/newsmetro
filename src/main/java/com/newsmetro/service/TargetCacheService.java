@@ -24,7 +24,7 @@ public class TargetCacheService {
     @Autowired
     private TargetCacheMapper targetCacheMapper;
 
-    public TargetCache getTargetCacheByTargetId(Integer targetId) {
+    public TargetCache getTargetCacheByTargetId(Long targetId) {
         return targetCacheMapper.getTargetCacheByTargetId(targetId);
     }
 }

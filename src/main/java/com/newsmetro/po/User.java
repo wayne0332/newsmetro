@@ -13,7 +13,7 @@ public class User implements java.io.Serializable {
 
 	// Fields
 
-	private Integer id;
+	private Long id;
 	private String name;
 	private String password;
 	private String email;
@@ -24,52 +24,23 @@ public class User implements java.io.Serializable {
 	private String code;
 	private Date registerDate;
 
-	// Constructors
 
 	/** default constructor */
 	public User() {
 	}
 
-	/** minimal constructor */
-	public User(Integer id, String name, String password, String email,
-			SexEnum sex, String photo, String talking, UserStatus status, String code) {
-		this.id = id;
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.sex = sex;
-		this.photo = photo;
-		this.talking = talking;
-		this.status = status;
-		this.code = code;
-	}
-
-	/** full constructor */
-	public User(Integer id, String name, String password, String email,
-			SexEnum sex, String photo, String talking, UserStatus status,
-			String code, Date registerDate) {
-		this.id = id;
-		this.name = name;
-		this.password = password;
-		this.email = email;
-		this.sex = sex;
-		this.photo = photo;
-		this.talking = talking;
-		this.status = status;
-		this.code = code;
-		this.registerDate = registerDate;
-	}
-
 	// Property accessors
-	public Integer getId() {
-		return this.id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
-	public String getName() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
 		return this.name;
 	}
 

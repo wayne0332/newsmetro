@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Param;
  * Created by finetu on 14-10-12.
  */
 public interface TargetCacheMapper {
-    TargetCache getTargetCacheByTargetId(@Param("targetId") Integer targetId);
+    TargetCache getTargetCacheByTargetId(@Param("targetId") Long targetId);
 
 }

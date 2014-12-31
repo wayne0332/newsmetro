@@ -12,11 +12,11 @@ import java.util.List;
 public interface TargetPointMapper {
     void save(@Param("target") TargetPoint target);
 
-    List<TargetPoint> findTargetByUserIdAndStatus(@Param("userId") Integer userId,@Param("status") TargetStatus status);
+    List<TargetPoint> findTargetByUserIdAndStatus(@Param("userId") Long userId,@Param("status") TargetStatus status);
 
-    TargetPoint getTargetById(@Param("id") Integer id);
+    TargetPoint getTargetById(@Param("id") Long id);
 
-    void deleteById(@Param("id") Integer id);
+    void deleteById(@Param("id") Long id);
 
     void update(@Param("target")TargetPoint target);
 }

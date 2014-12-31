@@ -168,7 +168,7 @@ public class ResourceAjax {
 	public void deleteTarget(HttpServletRequest request,HttpServletResponse response){
 		boolean flag = true;
 		
-		Integer id = Integer.parseInt(request.getParameter("id"));
+		Long id = Long.parseLong(request.getParameter("id"));
 		if(id==null){
 			flag = false;
 		}
@@ -203,8 +203,8 @@ public class ResourceAjax {
 	@RequestMapping(value="/hideTarget.html")
 	public void hideTarget(HttpServletRequest request,HttpServletResponse response){
 		boolean flag = true;
-		
-		Integer id = Integer.parseInt(request.getParameter("id"));
+
+        Long id = Long.parseLong(request.getParameter("id"));
 		if(id==null){
 			flag = false;
 		}
@@ -240,8 +240,8 @@ public class ResourceAjax {
 	@RequestMapping(value="/showUpTarget.html")
 	public void showUpTarget(HttpServletRequest request,HttpServletResponse response){
 		boolean flag = true;
-		
-		Integer id = Integer.parseInt(request.getParameter("id"));
+
+        Long id = Long.parseLong(request.getParameter("id"));
 		if(id==null){
 			flag = false;
 		}
@@ -358,9 +358,9 @@ public class ResourceAjax {
     @RequestMapping(value="/getResourceMd5.html")
     public void getResourceMd5(HttpServletRequest request,HttpServletResponse response){
         boolean flag = true;
-        Integer id = null;
+        Long id = null;
         try{
-            id = Integer.parseInt(request.getParameter("id"));
+            id = Long.parseLong(request.getParameter("id"));
         }catch(NumberFormatException e){
             flag = false;
         }
