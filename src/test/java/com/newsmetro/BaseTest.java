@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(
         locations={"/applicationContext.xml",
         "/application-redis.xml",
-        "/application-mapper.xml",})
+        "/application-mapper.xml",
+        "/application-constant.xml"})
 public class BaseTest {
 }
