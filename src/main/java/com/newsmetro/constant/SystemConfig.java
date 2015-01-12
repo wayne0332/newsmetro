@@ -20,8 +20,8 @@ public class SystemConfig {
         this.webSingleCrawlerPath = webSingleCrawlerPath;
     }
 
-    public String getRssSingleCrawlerPath() {
-        return rssSingleCrawlerPath;
+    public static String getRssSingleCrawlerPath() {
+        return instance.rssSingleCrawlerPath;
     }
 
     public void setRssSingleCrawlerPath(String rssSingleCrawlerPath) {

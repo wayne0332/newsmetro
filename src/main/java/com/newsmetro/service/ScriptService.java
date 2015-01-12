@@ -34,7 +34,7 @@ public class ScriptService {
     }
 
     public String tryRss(String url){
-        String command = SystemConfig.getWebSingleCrawlerPath() + " " + url;
+        String command = SystemConfig.getRssSingleCrawlerPath() + " " + url;
         String items = RuntimeUtil.execute(command,new RunScriptHandler(){
 
             @Override
