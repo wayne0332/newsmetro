@@ -17,4 +17,10 @@ public class ScriptServiceTest extends BaseTest {
         scriptService.tryTarget("http://news.sina.com.cn/","//*[@id=\"syncad_1\"]");
 
     }
+
+    @Test
+    public void tryRssTest(){
+        String res = scriptService.tryRss("http://jandan.net/feed");
+        System.out.println(res);
+    }
 }
