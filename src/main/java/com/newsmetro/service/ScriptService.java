@@ -39,7 +39,7 @@ public class ScriptService {
 
             @Override
             protected void handleLine(String line, String outStr) {
-                if(line.startsWith("[")){
+                if(line.startsWith("{")){
                     List list = GsonUtil.fromJson(line, java.util.List.class);
                     if(list.size()>0){
                         super.outStr = line;
