@@ -15,8 +15,8 @@ public class RuntimeUtil {
         try {
 
             Process proc = Runtime.getRuntime().exec(command);
-            final OutputStream os = proc.getOutputStream();
-            handler.setOutputStream(os);
+            final InputStream is = proc.getInputStream();
+            handler.setInputStream(is);
             new Thread(handler).start();
             resStr = handler.getOutStr();
             proc.waitFor();

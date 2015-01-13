@@ -2,37 +2,28 @@ package com.newsmetro.util.handler;
 
 import com.newsmetro.util.callback.ScriptOutLineCallback;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 /**
  * Created by lifeng.gao on 2014/12/26.
  */
 public abstract class RunScriptHandler implements Runnable{
     protected String outStr = null;
-    private OutputStream os;
+    private InputStream is;
     private ScriptOutLineCallback callback;
     public void run() {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
         try {
             String line = null;
-            while ((line = bw.toString()) != null) {
+            while ((line = br.readLine()) != null) {
                 handleLine(line,outStr);
-//                    if(line.startsWith("[")){
-//                        List list = GsonUtil.fromJson(line,java.util.List.class);
-//                        if(list.size()>0){
-//                            this.outStr = line;
-//                        }
-//                    }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         finally{
             try {
-                os.close();
+                is.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -45,7 +36,7 @@ public abstract class RunScriptHandler implements Runnable{
         return outStr;
     }
 
-    public void setOutputStream(OutputStream os) {
-        this.os = os;
+    public void setInputStream(InputStream is) {
+        this.is = is;
     }
 }
