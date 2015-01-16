@@ -46,15 +46,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                            onclick="$('#add_web_form').attr('style','display:block;');$('#add_rss_form').attr('style','display:none;');"/>
                     <span style="font-size:16px;">Web</span>
                     <div id="add_rss_form" >
-                        <form action="<c:url value='/addResource.html' />" method="post">
+                        <form action="<c:url value='/addResource.html' />" method="post" id="try_rss_form">
                             <div>资源名：<input class="w80" name="name" type="text" /></div>
                             <div>rss地址：<input class="w240" name="url" type="text" /></div>
                             <input type="hidden" name="isRss" value="true" />
                             <div><input type="submit" value="添加" class="signup_btn" /></div>
                         </form>
                     </div>
-                    <div id="add_web_form" style="display: none;">
-                        <form action="<c:url value='/addResource.html' />" method="post">
+                    <div id="add_web_form" style="display: none;" >
+                        <form action="<c:url value='/addResource.html' />" method="post" id="try_web_form">
                             <div>资源名：<input class="w80" name="name" type="text" /></div>
                             <div>url：<input class="w240" name="url" type="text" /></div>
                             <div>xpath:<input class="w240" name="relXpath" type="text" /></div>
@@ -149,6 +149,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	$('#add_res').click(function(){
 		$('#add_form').toggle(0);
 	});
+
+    function tryRss(){
+        var formData = $('#try_rss_form').serialize();
+
+        $.ajax({
+            type : "POST",
+            dataType : "html",
+            data : formData,
+            async:true,
+            url : <c:url value='/addResource.html' />,
+            success : updateView(data)
+        });
+    }
+
+    function updateView(data){
+        $("#name_view").html("");
+        $("#name_view").append("<a class='a_link_blue' href='"+data.link+"' >" + data.title + "</a>");
+        var itemList = data.itemList;
+        $("#list_view").html("");
+        var length = (itemList.length<=12)?itemList.length:12;
+        for (var i=0;i<itemList.length;i++){
+            if(i<length){
+                $("#list_view").append("<li class='mb5'><a id='item_view"+"_"+i+
+                        "' class='a_link' style='line-height:20px;' href="+itemList[i].href+"'' >"+itemList[i].text+"</a><li>");
+            }
+        }
+    }
+
+    function submitForm(formId, formAction) {
+        var formData = $('#' + formId).serialize();
+
+        $.ajax({
+            type : "POST",
+            dataType : "html",
+            data : formData,
+            async:true,
+            url : formAction,
+            success : function(data) {
+
+            }
+        });
+    }
+
   </script>
 </html>
 

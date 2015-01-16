@@ -7,6 +7,7 @@ import com.newsmetro.po.User;
 import com.newsmetro.pojo.Link;
 import com.newsmetro.pojo.Rss;
 import com.newsmetro.pojo.RssItem;
+import com.newsmetro.service.ScriptService;
 import com.newsmetro.service.TargetCacheService;
 import com.newsmetro.service.TargetPointService;
 import com.newsmetro.service.UserService;
@@ -46,6 +47,8 @@ public class ResourceAjax {
 	private UserService userService;
     @Autowired
     private TargetCacheService targetCacheService;
+    @Autowired
+    private ScriptService scriptService;
 
 	@RequestMapping(value="/getResource.html",params = "isRss=1")
 	public void getRss(HttpServletRequest request,HttpServletResponse response,TargetPoint target) {
@@ -120,18 +123,18 @@ public class ResourceAjax {
 
         TargetCache targetCache = targetCacheService.getTargetCacheByTargetId(target.getId());
 		jsonObject.put("itemList",targetCache.getItems());
-		
-		response.setContentType("application/json;charset=UTF-8");  
-        response.setHeader("Pragma", "No-cache");  
-        response.setHeader("Cache-Control", "no-cache");  
+
+		response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         PrintWriter out = null;
         try {
-            System.out.println(jsonObject.toString());
-            out = response.getWriter();  
-            out.write(jsonObject.toString());  
-        } catch (IOException e) {  
-            e.printStackTrace();  
+            logger.info(jsonObject.toString());
+            out = response.getWriter();
+            out.write(jsonObject.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 	}
 	
@@ -382,6 +385,29 @@ public class ResourceAjax {
         try {
             out = response.getWriter();
             out.write(res.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value="/tryRss.html")
+    public void tryRss(HttpServletRequest request,HttpServletResponse response){
+        String url = request.getParameter("url");
+        if(url==null){
+            return;
+        }
+
+        String feedStr = scriptService.tryRss(url);
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        PrintWriter out = null;
+        try {
+            logger.info(feedStr);
+            out = response.getWriter();
+            out.write(feedStr);
         } catch (IOException e) {
             e.printStackTrace();
         }
