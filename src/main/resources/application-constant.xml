@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="systemConfig" class="com.newsmetro.constant.SystemConfig" init-method="init">
-        <property name="webSingleCrawlerPath" value="/opt/newsmetro_deploy/scripts/run_web_single.sh"  />
-        <property name="rssSingleCrawlerPath" value="/opt/newsmetro_deploy/scripts/run_rss_single.sh"  />
+        <property name="webSingleCrawlerPath" value="/home/finetu/projects/phantomjs/bin/phantomjs /home/finetu/projects/phan_scripts/hello_world.js"  />
+        <property name="rssSingleCrawlerPath" value="python /home/finetu/projects/target_crawler/rss_single_crawler.py --url="  />
     </bean>
 </beans>

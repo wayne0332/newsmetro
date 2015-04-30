@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Link {
     @Expose
-    @SerializedName(value = "title")
+    @SerializedName(value = "text")
 	private String text;
 	@Expose
-    @SerializedName(value = "link")
+    @SerializedName(value = "href")
     private String href;
 	public String getText() {
 		return text;

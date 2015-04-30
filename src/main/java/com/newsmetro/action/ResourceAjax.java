@@ -1,5 +1,6 @@
 package com.newsmetro.action;
 
+import com.google.gson.JsonSyntaxException;
 import com.newsmetro.enumeration.TargetStatus;
 import com.newsmetro.po.TargetCache;
 import com.newsmetro.po.TargetPoint;
@@ -7,14 +8,12 @@ import com.newsmetro.po.User;
 import com.newsmetro.pojo.Link;
 import com.newsmetro.pojo.Rss;
 import com.newsmetro.pojo.RssItem;
+import com.newsmetro.pojo.TargetView;
 import com.newsmetro.service.ScriptService;
 import com.newsmetro.service.TargetCacheService;
 import com.newsmetro.service.TargetPointService;
 import com.newsmetro.service.UserService;
-import com.newsmetro.util.DESUtil;
-import com.newsmetro.util.HttpGetter;
-import com.newsmetro.util.MD5Util;
-import com.newsmetro.util.XpathUtil;
+import com.newsmetro.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.client.ClientProtocolException;
@@ -33,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -399,17 +399,65 @@ public class ResourceAjax {
 
         String feedStr = scriptService.tryRss(url);
 
+		TargetView jsonObj = null;
+		try{
+			jsonObj = GsonUtil.fromJson(feedStr, TargetView.class);
+		}catch (JsonSyntaxException e){
+			logger.info("try rss失败！{}",url);
+		}
+
+		if(jsonObj==null){
+			jsonObj = new TargetView();
+			jsonObj.setIsSuccess(false);
+			jsonObj.setLink(url);
+		}
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
         PrintWriter out = null;
         try {
-            logger.info(feedStr);
+            logger.info(GsonUtil.toJson(jsonObj));
             out = response.getWriter();
             out.write(feedStr);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+	@RequestMapping(value="/tryWeb.html")
+	public void tryWeb(HttpServletRequest request,HttpServletResponse response){
+		String url = request.getParameter("url");
+		String xpath = request.getParameter("relXpath");
+		if(url==null||xpath==null){
+			return;
+		}
+
+		String feedStr = scriptService.tryTarget(url,xpath);
+		TargetView jsonObj = null;
+		try{
+			jsonObj = GsonUtil.fromJson(feedStr, TargetView.class);
+		}catch (JsonSyntaxException e){
+			logger.info("try web失败！{},{}",url,xpath);
+		}
+
+		if(jsonObj==null){
+			jsonObj = new TargetView();
+			jsonObj.setIsSuccess(false);
+			jsonObj.setLink(url);
+		}
+
+		response.setContentType("application/json;charset=UTF-8");
+		response.setHeader("Pragma", "No-cache");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setDateHeader("Expires", 0);
+		PrintWriter out = null;
+		try {
+			logger.info(GsonUtil.toJson(jsonObj));
+			out = response.getWriter();
+			out.write(feedStr);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

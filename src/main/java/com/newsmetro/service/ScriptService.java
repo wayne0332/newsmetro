@@ -1,12 +1,13 @@
 package com.newsmetro.service;
 
+
 import com.newsmetro.constant.SystemConfig;
-import com.newsmetro.util.GsonUtil;
-import com.newsmetro.util.RuntimeUtil;
-import com.newsmetro.util.handler.RunScriptHandler;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 
 /**
  * Created by lifeng.gao on 2014/12/26.
@@ -14,39 +15,51 @@ import java.util.List;
 @Service
 public class ScriptService {
 
-    public String tryTarget(String url,String xpath){
-        String command = SystemConfig.getWebSingleCrawlerPath() + " " + url + " "+xpath;
-//        String items = RuntimeUtil.execute(command,new RunScriptHandler(){
-//
-//            @Override
-//            protected void handleLine(String line, String outStr) {
-//                if(line.startsWith("[")){
-//                    List list = GsonUtil.fromJson(line, java.util.List.class);
-//                    if(list.size()>0){
-//                        super.outStr = line;
-//                    }
-//                }
-//            }
-//        });
-//        return items;
-        System.out.println("------------>"+command);
-        return null;
+    public String tryTarget(String url,String xpath) {
+        String res = "";
+        String command = SystemConfig.getWebSingleCrawlerPath() + " " + url + " " + xpath;
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            InputStreamReader ir = new InputStreamReader(process.getInputStream());
+
+            LineNumberReader input = new LineNumberReader(ir);
+            String line;
+
+            while((line = input.readLine()) != null){
+                res += line;
+            }
+            input.close();
+            ir.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     public String tryRss(String url){
-        String command = SystemConfig.getRssSingleCrawlerPath() + " " + url;
-        String items = RuntimeUtil.execute(command,new RunScriptHandler(){
+        String command = SystemConfig.getRssSingleCrawlerPath() + url;
+        String items = "";
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            InputStreamReader ir = new InputStreamReader(process.getInputStream());
 
-            @Override
-            protected void handleLine(String line, String outStr) {
-                if(line.startsWith("{")){
-                    List list = GsonUtil.fromJson(line, java.util.List.class);
-                    if(list.size()>0){
-                        super.outStr = line;
-                    }
-                }
-            }
-        });
+            LineNumberReader input = new LineNumberReader(ir);
+            String line;
+            while((line = input.readLine()) != null)
+                items += line;
+            input.close();
+            ir.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return items;
     }
 }
