@@ -20,6 +20,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="css/base-min.css">
 	<link rel="stylesheet" type="text/css" href="css/common.css">
 	<link rel="shortcut icon" href="img/newsmetro_logo_blue_16.ico" type="image/x-icon" />
+	  <style type="text/css">
+		  li {list-style-type:none;}
+	  </style>
   </head>
   
   <body style="font-family:Microsoft YaHei;">
@@ -38,32 +41,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						style="line-height:70px; font-size: 36px; font-weight: bold;">+</a>
 				</div>
                 <div class="cb"></div>
-                <div id="add_form" style="line-height:40px; display:none; position: relative;">
-                    <input type="radio" id="add_rss_radio" name="isRss" value="true" checked="checked"
-                           onclick="$('#add_rss_form').attr('style','display:block;');$('#add_web_form').attr('style','display:none;');"  />
-                    <span style="font-size:16px; margin-right: 24px;">Rss</span>
-                    <input type="radio" id="add_web_radio" name="isRss" value="false"
-                           onclick="$('#add_web_form').attr('style','display:block;');$('#add_rss_form').attr('style','display:none;');"/>
-                    <span style="font-size:16px;">Web</span>
-                    <div id="add_rss_form" >
-                        <form action="<c:url value='/addResource.html' />" method="post" id="try_rss_form">
-                            <div>资源名：<input class="w80" name="name" type="text" /></div>
-                            <div>rss地址：<input class="w240" name="url" type="text" /></div>
-                            <input type="hidden" name="isRss" value="true" />
-                            <div><input type="submit" value="添加" class="signup_btn" /></div>
-                        </form>
-                    </div>
-                    <div id="add_web_form" style="display: none;" >
-                        <form action="<c:url value='/addResource.html' />" method="post" id="try_web_form">
-                            <div>资源名：<input class="w80" name="name" type="text" /></div>
-                            <div>url：<input class="w240" name="url" type="text" /></div>
-                            <div>xpath:<input class="w240" name="relXpath" type="text" /></div>
-                            <div><input type="hidden" name="isRss" value="false" /></div>
-                            <div><input type="submit" value="添加" class="signup_btn" /></div>
-                        </form>
-                    </div>
-                    <div style="margin:20 20 0 0; border-bottom:1px dashed #bbb;"></div>
-                </div>
+				<div id="add_form" style=" display:none; position: relative;">
+					<div style="float:left; width:400px; line-height:40px; ">
+						<input type="radio" id="add_rss_radio" name="isRss" value="true" checked="checked"
+							   onclick="$('#add_rss_form').attr('style','display:block;');$('#add_web_form').attr('style','display:none;');"  />
+						<span style="font-size:16px; margin-right: 24px;">Rss</span>
+						<input type="radio" id="add_web_radio" name="isRss" value="false"
+							   onclick="$('#add_web_form').attr('style','display:block;');$('#add_rss_form').attr('style','display:none;');"/>
+						<span style="font-size:16px;">Web</span>
+						<div id="add_rss_form" >
+							<form id="try_rss_form" action="<c:url value='/addResource.html' />" method="post">
+								<div>资源名：<input class="w80" name="name" type="text" /></div>
+								<div>rss地址：<input id="rss_url" class="w240" name="url" type="text" /></div>
+								<input type="hidden" name="isRss" value="true" />
+								<div class="fl ml20"><input id="btn_try_rss" type="button" onclick="javascript:tryRss();" value="try" class="signup_btn" /></div>
+								<div class="fl"><input type="submit" value="添加" class="signup_btn" /></div>
+							</form>
+						</div>
+						<div id="add_web_form" style="display: none;">
+							<form id="try_web_form" action="<c:url value='/addResource.html' />" method="post">
+								<div>资源名：<input class="w80" name="name" type="text" /></div>
+								<div>url：<input id="web_url" class="w240" name="url" type="text" /></div>
+								<div>xpath:<input id="web_xpath" class="w240" name="relXpath" type="text" /></div>
+								<div><input class="fl ml20" id="btn_try_web" type="button" onclick="javascript:tryWeb();" value="try" class="signup_btn" /></div>
+								<div><input class="fl ml20" type="submit" value="添加" class="signup_btn" /></div>
+							</form>
+						</div>
+					</div>
+					<div style="float:left;">
+						<div id="name_view" class="mb10"></div>
+						<div id="list_view"></div>
+					</div>
+				</div>
+				<div class="cb"></div>
+				<div style="margin:20px 20px 0px 0px; border-bottom:1px dashed #bbb;">
+				</div>
                 <div class="cb"></div>
 			</div>
 			<div class="cb" ></div>
@@ -151,6 +163,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
 
     function tryRss(){
+		if($.trim($("#rss_url").val()).length < 1){
+			alert("请输入url地址！");
+			return;
+		}
+		$("#btn_try_rss").attr('disabled',"true");
+		$("#btn_try_rss").attr('value','tring...');
+
+		var loading = '<img class="mt50" src="img/loading.gif" />';
+		$("#list_view").append(loading);
         var formData = $('#try_rss_form').serialize();
 
         $.ajax({
@@ -158,24 +179,79 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             dataType : "html",
             data : formData,
             async:true,
-            url : <c:url value='/addResource.html' />,
-            success : updateView(data)
+            url : "tryRss.html",
+            success : function(data){
+				$("#btn_try_rss").removeAttr("disabled");
+				$("#btn_try_rss").attr('value','try');
+				jsonObj = eval("("+data+")");
+				if(jsonObj.isSuccess==true){
+					$("#name_view").html("");
+					$("#name_view").append("<a class='a_link_blue f16' href='"+jsonObj.link+"' >" + jsonObj.title + "</a>");
+					var itemList =  jsonObj.itemList;
+					$("#list_view").html("");
+					var length = (itemList.length<=12)?itemList.length:12;
+					for (var i=0;i<itemList.length;i++){
+						if(i<length){
+							$("#list_view").append("<li class='mb5'><a id='item_view"+"_"+i+
+							"' class='a_link' target='_blank' href="+itemList[i].href+" >"+itemList[i].text+"</a></li>");
+						}
+					}
+				}else{
+					$("#name_view").html("");
+					$("#name_view").append("<a class='a_link_blue f16' href='"+jsonObj.link+"' >" + jsonObj.link + "</a>");
+				}
+
+			}
         });
     }
 
-    function updateView(data){
-        $("#name_view").html("");
-        $("#name_view").append("<a class='a_link_blue' href='"+data.link+"' >" + data.title + "</a>");
-        var itemList = data.itemList;
-        $("#list_view").html("");
-        var length = (itemList.length<=12)?itemList.length:12;
-        for (var i=0;i<itemList.length;i++){
-            if(i<length){
-                $("#list_view").append("<li class='mb5'><a id='item_view"+"_"+i+
-                        "' class='a_link' style='line-height:20px;' href="+itemList[i].href+"'' >"+itemList[i].text+"</a><li>");
-            }
-        }
-    }
+	function tryWeb(){
+		if($.trim($("#web_url").val()).length < 1){
+			alert("请输入url地址！");
+			return;
+		}
+		if($.trim($("#web_xpath").val()).length < 1){
+			alert("请输入xpath地址！");
+			return;
+		}
+		$("#btn_try_web").attr('disabled',"true");
+		$("#btn_try_web").attr('value','tring...');
+
+		$("#list_view").html("");
+		var loading = '<img class="mt50" src="img/loading.gif" />';
+		$("#list_view").append(loading);
+		var formData = $('#try_web_form').serialize();
+
+		$.ajax({
+			type : "POST",
+			dataType : "html",
+			data : formData,
+			async:true,
+			url : "tryWeb.html",
+			success : function(data){
+				$("#btn_try_web").removeAttr("disabled");
+				$("#btn_try_web").attr('value','try');
+				jsonObj = eval("("+data+")");
+				if(jsonObj.isSuccess==true){
+					$("#name_view").html("");
+					$("#name_view").append("<a class='a_link_blue f16' target='_blank' href='"+$("#web_url").val()+"' >" + $("#web_url").val() + "</a>");
+					var itemList = jsonObj.itemList;
+					$("#list_view").html("");
+					var length = (itemList.length<=12)?itemList.length:12;
+					for (var i=0;i<itemList.length;i++){
+						if(i<length){
+							$("#list_view").append("<li class='mb5'><a id='item_view"+"_"+i+
+							"' class='a_link' target='_blank' href="+itemList[i].href+" >"+itemList[i].text+"</a><li>");
+						}
+					}
+				}else{
+					$("#name_view").html("");
+					$("#name_view").append("<a class='a_link_blue f16' href='"+jsonObj.link+"' >" + jsonObj.link + "</a>");
+				}
+
+			}
+		});
+	}
 
     function submitForm(formId, formAction) {
         var formData = $('#' + formId).serialize();
@@ -192,6 +268,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         });
     }
 
+
+	/* 显示新闻 */
+	function showNews(targetIndex,itemIndex){
+		if(pointedItem!=null){
+			$(pointedItem).attr("style","line-height:20px;");
+		}else{
+			/* $("content").attr("style","width:1000px;"); */
+		}
+		pointedItem = $("#item_"+(targetIndex+1)+"_"+itemIndex);
+		$("#item_"+(targetIndex+1)+"_"+itemIndex).attr("style","line-height:20px; font-weight: bold;");
+		$("#left_panel").attr("style","width:370px;");
+		$("#page_switch").attr("style","display:block; width:100%");
+
+		trunBlockHide();
+		groupIndex = Math.floor(targetIndex/2);
+		trunGroupShow(groupIndex);
+
+		$("#news_panel").html("");
+		var titleDiv = "<div style='margin:0 auto; font-size:20px; font-weight: bold; margin-bottom:30px;'><a target='_blank' class='a_link color_blue' href='"+targetItems[targetIndex][itemIndex].linkUrl+"' >"+targetItems[targetIndex][itemIndex].title+"</a><div>";
+		$("#news_panel").append(titleDiv,targetItems[targetIndex][itemIndex].description.htmlCode);
+		$("#news_panel").attr("style","width:530px; display:block;");
+
+	}
   </script>
 </html>
 

@@ -20,7 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="css/common.css">
 	<link rel="shortcut icon" href="img/newsmetro_logo_blue_16.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-	
+
   </head>
   
   <body style="font-family:Microsoft YaHei;">
@@ -46,37 +46,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</span>
 					</div>
 					<div class="fl">
-						<a href="javascript:void(0);" id="add_res" class="a_link_guan"
+						<a href="<c:url value="/myTargetList.html"/>" id="add_res" class="a_link_guan"
 							style="line-height:70px; font-size: 36px; font-weight: bold;">+</a>
 					</div>
-                    <div class="cb"></div>
-                    <div id="add_form" style="line-height:40px; display:none; position: relative;">
-                        <input type="radio" id="add_rss_radio" name="isRss" value="true" checked="checked"
-                               onclick="$('#add_rss_form').attr('style','display:block;');$('#add_web_form').attr('style','display:none;');"  />
-                        <span style="font-size:16px; margin-right: 24px;">Rss</span>
-                        <input type="radio" id="add_web_radio" name="isRss" value="false"
-                               onclick="$('#add_web_form').attr('style','display:block;');$('#add_rss_form').attr('style','display:none;');"/>
-                        <span style="font-size:16px;">Web</span>
-                        <div id="add_rss_form" >
-                            <form action="<c:url value='/addResource.html' />" method="post">
-                                <div>资源名：<input class="w80" name="name" type="text" /></div>
-                                <div>rss地址：<input class="w240" name="url" type="text" /></div>
-                                <input type="hidden" name="isRss" value="true" />
-                                <div><input type="submit" value="添加" class="signup_btn" /></div>
-                            </form>
-                        </div>
-                        <div id="add_web_form" style="display: none;">
-                            <form action="<c:url value='/addResource.html' />" method="post">
-                                <div>资源名：<input class="w80" name="name" type="text" /></div>
-                                <div>url：<input class="w240" name="url" type="text" /></div>
-                                <div>xpath:<input class="w240" name="relXpath" type="text" /></div>
-                                <div><input type="hidden" name="isRss" value="false" /></div>
-                                <div><input type="submit" value="添加" class="signup_btn" /></div>
-                            </form>
-                        </div>
-                        <div style="margin:20 20 0 0; border-bottom:1px dashed #bbb;"></div>
-                    </div>
 					<div class="cb"></div>
+					<div style="margin:20px 20px 0px 0px; border-bottom:1px dashed #bbb;">
+					</div>
+
 				</div>
 				<div id="splite" class="cb"></div>
 				<div id="left_panel" class="fl" style="width:800px;">
@@ -241,11 +217,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
         }
 
-		/* 点击添加 */
-		$('#add_res').click(function(){
-			$('#add_form').toggle(0);
-		});
-		
 		$(document).dblclick(function(){
 			trunBlockShow();
 			$("#page_switch").attr("style","display:none;");
@@ -294,5 +265,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 
         $(document).bind("selectstart",function(){return false;});
+
+
 	</script>
 </html>
