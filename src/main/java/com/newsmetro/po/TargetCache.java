@@ -9,6 +9,7 @@ public class TargetCache {
     private Long id;
     private Long targetId;
     private String items;
+    private String md5;
     private Timestamp updateTime;
 
     public Long getId() {
@@ -33,6 +34,14 @@ public class TargetCache {
 
     public void setItems(String items) {
         this.items = items;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 
     public Timestamp getUpdateTime() {

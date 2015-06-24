@@ -63,10 +63,13 @@ public class HtmlBlock {
 				//sb.insert(index, "$");
 			}
 		}
-		while((index = sb.indexOf("&"))!=-1){
+		boolean end = false;
+		while((index = sb.indexOf("&"))!=-1&&!end){
 			int tagEnd = 0;
-			if((tagEnd = sb.indexOf(";"))!=-1){
-				sb.delete(index, tagEnd+1);
+			if((tagEnd = sb.substring(index).indexOf(";"))!=-1&&tagEnd>index){
+				sb.delete(index, index + tagEnd+1);
+			}else{
+				end = true;
 			}
 		}
 		return sb.toString();

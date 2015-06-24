@@ -18,11 +18,11 @@
         delete from target_point where id = #{id}
     </delete>
 
-    <insert id="save"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.newsmetro.po.TargetPoint"  useGeneratedKeys="true" keyProperty="id">
         insert into target_point(user_id,name,url,abs_xpath,rel_xpath,regex,md5,isRss,status)
-        values (#{target.userId},#{target.name},#{target.url},#{target.absXpath},#{target.relXpath},#{target.regex},#{target.md5}
-        ,#{target.isRss},#{target.status});
-        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+        values (#{userId},#{name},#{url},#{absXpath},#{relXpath},#{regex},#{md5}
+        ,#{isRss},#{status});
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             select LAST_INSERT_ID();
         </selectKey>
     </insert>

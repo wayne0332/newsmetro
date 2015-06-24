@@ -50,12 +50,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							style="line-height:70px; font-size: 36px; font-weight: bold;">+</a>
 					</div>
 					<div class="cb"></div>
-					<div style="margin:20px 20px 0px 0px; border-bottom:1px dashed #bbb;">
-					</div>
 
 				</div>
 				<div id="splite" class="cb"></div>
-				<div id="left_panel" class="fl" style="width:800px;">
+				<div id="left_panel" class="fl" style="width:900px;">
 					<div id="page_switch" style="display:none;">
 						<a class="fl ml30 a_link color_blue" href="javascript:last_Group();">&lt;&lt;上一组</a>
 						<span id="page_value" class="fl" style="margin-left:80px;" ></span>
@@ -88,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		var groupNum = 0;
   		var targetNum = 0;
   		var pointedItem = null;
-        var targetList = null;
+        var targetGroupList = null;
 		var targetItems=new Array();
        for(var i=0;i<50;i++){
           targetItems[i]=new Array();
@@ -97,35 +95,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$(document).ready(function() {
 			$.ajax({
 				type : "POST",
-				url : "getTargetPointList.html",
+				url : "getTargetPointGroupList.html",
 				success : function(data) {
 					var panel = $("#target_panel");
-					var i = 1;
-					for(t in data){
-						var block = document.createElement("div");
-						block.setAttribute("id", "block_"+i);
-						block.setAttribute("class", "m10 fl");
-						panel.append(block);
-						var name = '<div class="fl f16" id="name_'+i+'"></div>';
-						var des = '<div class="fl mt5 ml10 color_gray w250" id="description_'+i+'"></div>';
-                        var md5 = '<input type="hidden" id="md5_'+i+'" value="'+data[t].md5+'" />';
-                        var target_id = '<input type="hidden" id="target_id_'+i+'" value="'+data[t].id+'" />';
-						var hr = '<div class="cb mt5 mb10"><hr width="200px" /></div>';
-						var ul = '<div style="width:340px;"><ul class="fl" id="list_'+i+'"><li><img class="mt50" src="img/loading.gif" /></li></ul></div>';
-						$("#block_"+i).append(target_id,md5,name,des,hr,ul);
-						$("#name_"+i).append("<a class='a_link_blue' href='javascript:void(0);' >" + data[t].name + "</a>");
-						/*$("#block_"+i).after('<div class="cb h30"></div>');  */
-                        if(i%2==0&&i!=0){
-							$("#block_"+i).after("<div class='cb'></div>");
+					for(var j=0;j<data.length;j++){
+						var group = document.createElement("div");
+						$("#target_panel").append(group);
+						group.setAttribute("id", "group_"+j);
+						group.setAttribute("class", "m10 fl");
+						group.setAttribute("style", "width:100%;");
+						var groupName = '<div class="fl f16" id="group_name_'+j+'">'+data[j].name+'</div>';
+						var groupHr = '<div class="mt5 mb10 cb" style="border-bottom:1px dashed #bbb;"></div>';
+						$("#group_"+j).append(groupName,groupHr);
+						var i = 1;
+						var targetList = data[j].targetList;
+						for(t in targetList){
+							var block = document.createElement("div");
+							block.setAttribute("id", "block_"+targetList[t].id);
+							block.setAttribute("class", "m10 fl w400");
+							$("#group_"+j).append(block);
+							var name = '<div class="fl f16" id="name_'+targetList[t].id+'"></div>';
+							var des = '<div class="fl mt5 ml10 color_gray w250" id="description_'+targetList[t].id+'"></div>';
+							var md5 = '<input type="hidden" id="md5_'+targetList[t].id+'" value="'+targetList[t].id.md5+'" />';
+							var target_id = '<input type="hidden" id="target_id_'+targetList[t].id+'" value="'+targetList[t].id+'" />';
+							var hr = '<div class="cb mt5 mb10"></div>';
+							var ul = '<div style="width:340px;"><ul class="fl" id="list_'+targetList[t].id+'"><li><img class="mt50" src="img/loading.gif" /></li></ul></div>';
+							$("#block_"+targetList[t].id).append(target_id,md5,name,des,hr,ul);
+							$("#name_"+targetList[t].id).append("<a class='a_link_blue' href='javascript:void(0);' >" + targetList[t].name + "</a>");
+							/*$("#block_"+i).after('<div class="cb h30"></div>');  */
+							if(i%2==0&&i!=0){
+								$("#block_"+targetList[t].id).after("<div class='cb'></div>");
+							}
+							i++;
+							targetNum++;
 						}
-						i++;
-						targetNum++;
+						$("#target_panel").append("<div class='cb'></div>");
 					}
-                    targetList = data;
-					for(var i=0;i<data.length;i++){
-						getTargetPoint(data[i].isRss,i+1);
+					targetGroupList = data;
+					for(var j=0;j<data.length;j++){
+						if(data[j].targetList==null){
+							continue;
+						}
+						for(var i=0;i<data[j].targetList.length;i++){
+							getTargetPoint(0,data[j].targetList[i].id);
+						}
 					}
-
 					groupNum = Math.ceil(targetNum/2);
 				}
 			});
@@ -134,57 +148,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 //            }
 		});
 		/* 获取目标点内容 */
-		function getTargetPoint(isRss,index){
-			if(isRss==1){
+		function getTargetPoint(isRss,targetId){
+			if(isRss==0){
 				$.ajax({
 					type : "POST",
-					url : "getResource.html?isRss=1&id="+targetList[index-1].id,
+					url : "getResource.html?isRss=0&id="+targetId,//+"&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath
 					success : function(data) {
-						$("#name_"+index).html("");
-						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + targetList[index-1].name + "</a>");
-                        $("#description_"+index).html("");
-                        $("#description_"+index).append("<span>" + data.description + "</span>");
+						/*$("#name_"+index).html("");
+						 $("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + targetList[index-1].name + "</a>");*/
+						$("#a_update_"+targetId).remove();
+						$("#description_"+targetId).append("<span>" + data.description + "</span>");
+						$("#md5_"+targetId).attr("value",data.md5);
 						var itemList = data.itemList;
-						$("#list_"+index).html("");
-						var length = (itemList.length<=12)?itemList.length:12;
-						for (var i=0;i<itemList.length;i++){
-							if(i<length){
-								$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+
-                                        "' class='a_link' style='line-height:20px;' href='javascript:showNews("+(index-1)+","+i+");' >"+itemList[i].title+"</a><li>");
-							}
-							targetItems[index-1][i]=itemList[i];
-						}
-					}
-				});
-			}else{
-				$.ajax({
-					type : "POST",
-					url : "getResource.html?isRss=0&id="+targetList[index-1].id,//+"&url="+url+"&relXpath="+target.relXpath+"&absXpath="+target.absXpath
-					success : function(data) {
-						$("#name_"+index).html("");
-						$("#name_"+index).append("<a class='a_link_blue' href='"+data.link+"' >" + targetList[index-1].name + "</a>");
-						$("#description_"+index).append("<span>" + data.description + "</span>");
-						var itemList = data.itemList;
-						$("#list_"+index).html("");
+						$("#list_"+targetId).html("");
 						var length = (itemList.length<=12)?itemList.length:12;
 						for (var i=0;i<itemList.length;i++){
 							if(i<length){
 								//$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+"' class='a_link' style='line-height:20px;' href='javascript:showNews("+(index-1)+","+i+");' >"+itemList[i].title+"</a><li>");
-								$("#list_"+index).append("<li class='mb5'><a id='item_"+index+"_"+i+"' class='a_link' style='line-height:20px;' href='"+itemList[i].href+"' target='_blank' >"+itemList[i].text+"</a><li>");
+								$("#list_"+targetId).append("<li class='mb5'><a id='item_"+targetId+"_"+i+"' class='a_link' style='line-height:20px;' href='"+itemList[i].href+"' target='_blank' >"+itemList[i].text+"</a><li>");
 							}
-							targetItems[index-1][i]=itemList[i];
+							/*targetItems[index-1][i]=itemList[i];*/
 						}
-                        window.setInterval("checkTargetUpdate("+index+","+targetList[index-1].id+")",30000);
+						window.setInterval("checkTargetUpdate("+targetId+")",30000);
 					}
 				});
 			}
 		};
 		/* 显示新闻 */
-		function showNews(targetIndex,itemIndex){
+		/*function showNews(targetIndex,itemIndex){
 			if(pointedItem!=null){
 				$(pointedItem).attr("style","line-height:20px;");
 			}else{
-				/* $("content").attr("style","width:1000px;"); */
+				*//* $("content").attr("style","width:1000px;"); *//*
 			}
 			pointedItem = $("#item_"+(targetIndex+1)+"_"+itemIndex);
 			$("#item_"+(targetIndex+1)+"_"+itemIndex).attr("style","line-height:20px; font-weight: bold;");
@@ -200,19 +195,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("#news_panel").append(titleDiv,targetItems[targetIndex][itemIndex].description.htmlCode);
 			$("#news_panel").attr("style","width:530px; display:block;");
 			
-		}
+		}*/
 
-        function checkTargetUpdate(index,target_id){
-            var old_md5 = $("#md5_"+index).attr("value");
+        function checkTargetUpdate(target_id){
+            var old_md5 = $("#md5_"+target_id).attr("value");
             $.ajax({
                 type : "POST",
                 url : "getResourceMd5.html?id="+target_id,
                 success : function(data) {
-                    if(data.md5!=old_md5&&$("#has_new_"+index).length==0){
-                        $("#name_"+index).append("<a style='color:red; font-size:8px; margin-left:10px;' href='javascript:void(0);' onclick='getTargetPoint(0,"+index+");'>更新"+
-                                "<span class='alertLabel' style='position:relative; font-weight:bold;' id='has_new_"+index+"' >*</span></a>");
+                    if(data.md5!=old_md5&&$("#has_new_"+target_id).length==0){
+                        $("#name_"+target_id).append("<a id='a_update_"+target_id+"' style='color:red; font-size:8px; margin-left:10px;' href='javascript:void(0);' onclick='getTargetPoint(0,"+target_id+");'>更新"+
+                                "<span class='alertLabel' style='position:relative; font-weight:bold;' id='has_new_"+target_id+"' >*</span></a>");
                     }
-                    $("#md5_"+index).attr("value",data.md5);
+                    $("#md5_"+target_id).attr("value",data.md5);
                 }
             });
         }
@@ -221,8 +216,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			trunBlockShow();
 			$("#page_switch").attr("style","display:none;");
 			$("#news_panel").attr("style","display:none");
-			$("#left_panel").attr("style","width:800px;display:none;");
-			$("#left_panel").attr("style","width:800px;display:block;");
+			$("#left_panel").attr("style","width:900px;display:none;");
+			$("#left_panel").attr("style","width:900px;display:block;");
 		});
 		
 		function trunBlockHide(){

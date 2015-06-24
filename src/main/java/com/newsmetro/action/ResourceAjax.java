@@ -3,16 +3,11 @@ package com.newsmetro.action;
 import com.google.gson.JsonSyntaxException;
 import com.newsmetro.enumeration.TargetStatus;
 import com.newsmetro.po.TargetCache;
+import com.newsmetro.po.TargetGroup;
 import com.newsmetro.po.TargetPoint;
 import com.newsmetro.po.User;
-import com.newsmetro.pojo.Link;
-import com.newsmetro.pojo.Rss;
-import com.newsmetro.pojo.RssItem;
-import com.newsmetro.pojo.TargetView;
-import com.newsmetro.service.ScriptService;
-import com.newsmetro.service.TargetCacheService;
-import com.newsmetro.service.TargetPointService;
-import com.newsmetro.service.UserService;
+import com.newsmetro.pojo.*;
+import com.newsmetro.service.*;
 import com.newsmetro.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,7 +28,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -49,6 +46,8 @@ public class ResourceAjax {
     private TargetCacheService targetCacheService;
     @Autowired
     private ScriptService scriptService;
+	@Autowired
+	private TargetGroupService targetGroupService;
 
 	@RequestMapping(value="/getResource.html",params = "isRss=1")
 	public void getRss(HttpServletRequest request,HttpServletResponse response,TargetPoint target) {
@@ -65,16 +64,7 @@ public class ResourceAjax {
 
 			tpService.updateTarget(tp);
 			doc = getter.toDom4jDoc(docStr);
-		} catch (ClientProtocolException e) {
-			doc = null;
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			doc = null;
-			e.printStackTrace();
-		} catch (IOException e) {
-			doc = null;
-			e.printStackTrace();
-		} catch (Exception e) {
+		}catch (Exception e) {
 			doc = null;
 			e.printStackTrace();
 		}
@@ -120,8 +110,8 @@ public class ResourceAjax {
 		jsonObject.put("title",tp.getName());
 		jsonObject.put("link",tp.getUrl());
 		jsonObject.put("description","");
-
         TargetCache targetCache = targetCacheService.getTargetCacheByTargetId(target.getId());
+		jsonObject.put("md5",targetCache.getMd5());
 		jsonObject.put("itemList",targetCache.getItems());
 
 		response.setContentType("application/json;charset=UTF-8");
@@ -138,22 +128,54 @@ public class ResourceAjax {
         }
 	}
 	
-	@RequestMapping("/getTargetPointList")
-	public void getTargetPointList(HttpServletRequest request,HttpServletResponse response){
+	@RequestMapping("/getTargetPointGroupList")
+	public void getTargetPointGroupList(HttpServletRequest request,HttpServletResponse response){
 		User user = (User) request.getSession().getAttribute("user");
-		List<TargetPoint> list = tpService.getRegularTargetListByUserId(user.getId());
-		JSONArray targetArray = new JSONArray();
-		for(TargetPoint t:list){
-			JSONObject item = new JSONObject();
-			item.put("id", t.getId());
-			item.put("name", t.getName());
-			item.put("url", t.getUrl());
-			item.put("isRss", t.getIsRss()?1:0);
-			item.put("absXpath", t.getAbsXpath());
-			item.put("relXpath", t.getRelXpath());
-			item.put("md5", t.getMd5());
-			targetArray.add(item);
+
+		List<TargetPoint> targetList = tpService.getTargetListByUserId(user.getId());
+
+		List<TargetGroup> targetGroupList = new ArrayList<TargetGroup>();
+		targetGroupList = targetGroupService.findByUserId(user.getId());
+		List<TargetGroupBean> beanList = new ArrayList<TargetGroupBean>();
+		for (TargetGroup tg : targetGroupList) {
+			TargetGroupBean bean = new TargetGroupBean();
+			bean.setTargetGroup(tg);
+			List<TargetPoint> tList = targetGroupService.findTargetByGroupId(tg.getId());
+			if(tList==null){
+				tList = new ArrayList<TargetPoint>();
+			}
+			bean.setTargetPointList(tList);
+			beanList.add(bean);
 		}
+
+		TargetGroupBean noGroupBean = findNoGroupedTargetGroupBean(targetList,beanList);
+		beanList.add(0,noGroupBean);
+
+		JSONArray groupArray = new JSONArray();
+		for(TargetGroupBean bean:beanList){
+			TargetGroup groupBean = bean.getTargetGroup();
+			JSONObject group = new JSONObject();
+			group.put("id", groupBean.getId());
+			group.put("name",groupBean.getName());
+			group.put("position",groupBean.getPosition());
+
+			JSONArray targetArray = new JSONArray();
+			List<TargetPoint> list = bean.getTargetPointList();
+			for(TargetPoint t:list){
+				JSONObject item = new JSONObject();
+				item.put("id", t.getId());
+				item.put("name", t.getName());
+				item.put("url", t.getUrl());
+				item.put("isRss", t.getIsRss()?1:0);
+				item.put("absXpath", t.getAbsXpath());
+				item.put("relXpath", t.getRelXpath());
+				item.put("md5", t.getMd5());
+				targetArray.add(item);
+			}
+			group.put("targetList",targetArray);
+			groupArray.add(group);
+		}
+
 		response.setContentType("application/json;charset=UTF-8");  
         response.setHeader("Pragma", "No-cache");  
         response.setHeader("Cache-Control", "no-cache");  
@@ -161,7 +183,7 @@ public class ResourceAjax {
         PrintWriter out = null;
         try {  
             out = response.getWriter();  
-            out.write(targetArray.toString());  
+            out.write(groupArray.toString());
         } catch (IOException e) {  
             e.printStackTrace();  
         }  
@@ -187,7 +209,8 @@ public class ResourceAjax {
 		}
 		
 		tpService.deleteTarget(target.getId());
-		
+		targetCacheService.deleteTargetCache(id);
+
 		JSONObject res = new JSONObject();
 		res.put("res", flag?true:false);
 		response.setContentType("application/json;charset=UTF-8");  
@@ -371,7 +394,8 @@ public class ResourceAjax {
             flag = false;
         }
 
-        String md5 = tpService.getTargetMd5(id);
+        TargetCache targetcache = targetCacheService.getTargetCacheByTargetId(id);
+		String md5  = targetcache.getMd5();
 
         User user = (User)request.getSession().getAttribute("user");
 
@@ -453,11 +477,40 @@ public class ResourceAjax {
 		response.setDateHeader("Expires", 0);
 		PrintWriter out = null;
 		try {
-			logger.info(GsonUtil.toJson(jsonObj));
+			String res = GsonUtil.toJson(jsonObj);
+			logger.info(res);
 			out = response.getWriter();
-			out.write(feedStr);
+			out.write(res);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private TargetGroupBean findNoGroupedTargetGroupBean(
+			List<TargetPoint> targetPointList,List<TargetGroupBean> targetGroupBeanList){
+		Set<Long> idSet = new HashSet<Long>();
+		for(TargetGroupBean b:targetGroupBeanList){
+			if(b.getTargetPointList()==null){
+				continue;
+			}
+			for(TargetPoint p:b.getTargetPointList()){
+				idSet.add(p.getId());
+			}
+		}
+		List<TargetPoint> resList = new ArrayList<TargetPoint>();
+		for(TargetPoint t:targetPointList){
+			if(!idSet.contains(t.getId())) {
+				resList.add(t);
+			}
+		}
+		TargetGroupBean resBean = new TargetGroupBean();
+		TargetGroup tg = new TargetGroup();
+		tg.setId(0l);
+		tg.setName("未分组");
+		tg.setPosition(0);
+		tg.setStatus(1);
+		resBean.setTargetGroup(tg);
+		resBean.setTargetPointList(resList);
+		return resBean;
 	}
 }

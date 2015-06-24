@@ -9,4 +9,7 @@ import org.apache.ibatis.annotations.Param;
 public interface TargetCacheMapper {
     TargetCache getTargetCacheByTargetId(@Param("targetId") Long targetId);
 
+    void saveTargetCache(@Param("targetCache") TargetCache targetCache);
+
+    void delete(@Param("targetId") Long targetId);
 }

@@ -27,4 +27,13 @@ public class TargetCacheService {
     public TargetCache getTargetCacheByTargetId(Long targetId) {
         return targetCacheMapper.getTargetCacheByTargetId(targetId);
     }
+
+    public void saveTargetCache(TargetCache targetCache) {
+        targetCacheMapper.saveTargetCache(targetCache);
+    }
+
+    public void deleteTargetCache(Long targetId){
+        targetCacheMapper.delete(targetId);
+    }
+
 }

@@ -16,4 +16,8 @@
     <bean id="targetCacheMapper" parent="parentMapper">
         <property name="mapperInterface" value="com.newsmetro.dao.TargetCacheMapper"></property>
     </bean>
+    <bean id="targetGroupMapper" parent="parentMapper">
+        <property name="mapperInterface" value="com.newsmetro.dao.TargetGroupMapper"></property>
+    </bean>
+
 </beans>

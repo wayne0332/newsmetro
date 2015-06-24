@@ -10,7 +10,7 @@ import java.util.List;
  * Created by lifeng.gao on 2014/10/11.
  */
 public interface TargetPointMapper {
-    void save(@Param("target") TargetPoint target);
+    void save(TargetPoint target);
 
     List<TargetPoint> findTargetByUserIdAndStatus(@Param("userId") Long userId,@Param("status") TargetStatus status);
 
